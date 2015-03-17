@@ -10,14 +10,13 @@ class EventController {
         $this->view = new Viewer;
     }
     public function getCalendar($vars=  array()){
-      // $currertDate = date("m.d.y");
-       $firstDayweek = date("w");
-       $countDayMonth = date("t");
-       $firstDayMonth = date("Y-m-01, w");
-       var_dump($firstDayMonth);
-       echo date("w");
-       $res = array("firstDayweek"=>$firstDayweek,
-           "countDayMonth"=>$countDayMonth,"firstDayMonth"=>$firstDayMonth);
+        $countDayMonth = date("t");
+        $firstDayMonth = date("w", mktime(0,0,0,date("m"),1,date("Y"))); 
+        $firstDayWeek = 1;
+       //var_dump($firstDayMonth);
+     //  echo date("w");
+       $res = array("countDayMonth"=>$countDayMonth,
+           "firstDayWeek"=>$firstDayWeek, "firstDayMonth"=>$firstDayMonth);
        
        return $res;
     }

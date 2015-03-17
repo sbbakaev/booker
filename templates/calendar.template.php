@@ -5,30 +5,59 @@
 
             <?php
             $calendarData = $vars['calendarData'];
-            $count = $calendarData['firstDayweek'] + 1;
             $firstDayMonth = $calendarData['firstDayMonth'];
+            $firstDayWeek = $calendarData['firstDayWeek'];
+
+            if ($firstDayWeek == 0) {
+                echo '<tr><td>Sunday</td>'
+                . '<td>Monday</td>'
+                . '<td>Tuesday</td>'
+                . '<td>Wednesday</td>'
+                . '<td>Thursday</td>'
+                . '<td>Friday</td>'
+                . '<td>Saturday</td></tr>';
+            } else {
+                echo '<tr><td>Monday</td>'
+                . '<td>Tuesday</td>'
+                . '<td>Wednesday</td>'
+                . '<td>Thursday</td>'
+                . '<td>Friday</td>'
+                . '<td>Saturday</td>'
+                . '<td>Sunday</td></tr>';
+            }
             $countDay = 0;
-            //  var_dump($count);
-            echo '<tr>';
+
+            if ($firstDayWeek != 0) {
+                if ($firstDayMonth == 0) {
+                    $firstDayMonth = 7;
+                }
+                $firstDayMonth-=$firstDayWeek;
+            }
             if ($firstDayMonth != 0) {
+
+                echo '<tr>';
                 for ($i = 0; $i < $firstDayMonth; $i++) {
-                    echo '<td class="cell"> </td>';
+                    echo '<td class="cell"></td>';
                     $countDay++;
-                    if ($countDay == 6) {
-                        echo '</tr> <tr>';
+                    if ($countDay == 7) {
+                        echo '</tr>';
                         $countDay = 0;
                     }
                 }
             }
-            
+
+
+
             for ($i = 1; $i < $calendarData['countDayMonth'] + 1; $i++) {
-                echo '<td class="cell">' . $i . '</td>';
-                $countDay++;
-                var_dump($countDay);
-                if ($countDay > 6) {
-                    echo '</tr> <tr>';
+                if ($countDay == 0) {
+                    echo '<tr>';
+                } elseif ($countDay == 7) {
+                    echo '</tr>';
                     $countDay = 0;
                 }
+
+                echo '<td class="cell">' . $i . '</td>';
+                $countDay++;
             }
             ?>
 

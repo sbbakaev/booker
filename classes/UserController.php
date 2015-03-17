@@ -13,7 +13,7 @@ class UserController {
     public function userList() {
         $data = array();
         $res = $this->model->userList($data);
-         $this->view->addTemplate('asd')->render();
+        $this->view->addTemplate('asd')->render();
 
         //include 'templates/main.template.php';
     }
