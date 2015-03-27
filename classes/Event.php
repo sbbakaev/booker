@@ -17,15 +17,15 @@ class Event extends sql {
 
         $query = 'INSERT INTO event (`room_id`, `description`,`user_id`) '
                 . 'VALUES (:room_id, :description,:user_id)';
-        $params = array("room_id" => "$data['room']", "description" => "$description", "user_id" => "$user_id");
-        $res = $this->executeQuery($query, $data);
+        $params = array("room_id" => $data['room'], "description" => $data['description'], "user_id" => $data['user_id']);
+        $res = $this->executeQuery($query, $params);
 
         $recurringCount = $data['recurringCount'];
         $recurringFrequency = $data['recurringFrequency'];
         $dateStart = $data['dateStart'];
         $dateEnd = $data['dateEnd'];
         $dateStart = $data['dateStart'];
-        $params = array();
+        $params = [];
         $temp = array();
         if ($recurringCount > 0) {
             if ($recurringFrequency == "weekly") {
