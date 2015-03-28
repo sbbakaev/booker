@@ -2,6 +2,8 @@
 
 class Dispatcher
 {
+    private $class = 'EventController';
+    private $method = 'showCalendar';
     private static $instanse;
     
     private function __construct() {
@@ -19,10 +21,20 @@ class Dispatcher
     public function dispatch($url)
     {
         $url = strtolower($url);
-        $dispatch = explode("/", $url);
-        $class = ucfirst($dispatch[1]).'Controller';//TODO Добавить проверку доступа к предопределенным классам.
-        $method = $dispatch[2];
-        $object = new $class();
-        $object->$method();
+       // var_dump($_SERVER);exit;
+        $argument = explode("?", $url);
+        $dispatch = explode("/", $argument[0]);
+        var_dump($argument);
+        if(isset($dispatch[1])&& strlen($dispatch[1])>0)
+        {
+            $this->class = ucfirst($dispatch[1]).'Controller';//TODO Добавить проверку доступа к предопределенным классам.
+        }
+        
+        if(isset($dispatch[2]) && strlen($dispatch[2])>0)
+        {
+            $this->method = $dispatch[2];
+        }
+            $object = new $this->class($_GET);
+            $object->{$this->method}();
     }
 }

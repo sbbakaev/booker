@@ -15,7 +15,7 @@ class Event extends sql {
 
     public function addEvent($data) {
 
-        $query = 'INSERT INTO event (`room_id`, `description`,`user_id`) '
+   /*     $query = 'INSERT INTO event (`room_id`, `description`,`user_id`) '
                 . 'VALUES (:room_id, :description,:user_id)';
         $params = array("room_id" => $data['room'], "description" => $data['description'], "user_id" => $data['user_id']);
         $res = $this->executeQuery($query, $params);
@@ -55,7 +55,7 @@ class Event extends sql {
             "date_start" => "$date_start", "date_end" => "$date_end");
 
         $res = $this->executeQuery($query, $data);
-        return $res;
+        return $res;*/
     }
 
 }

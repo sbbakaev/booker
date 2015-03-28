@@ -24,10 +24,12 @@
                 <div id="backMonth" style="border: medium solid; float: left;"><</div>
                 <div id="monthCurrent" style="border: medium solid; float: left;">
                     <?php
-                    echo $vars['monthCurrent'];
+                    echo $vars['currentMonth'];
                     ?>
                 </div>
+                <a href="/?month=<?php echo $vars['nextMonth'];?>?year=<?php echo $vars['nextYear']; ?>">
                 <div id="nextMonth" style="border: medium solid; float: left;">></div>
+                </a>
             </div>
             <div id="calendarMain" class="" style="clear: both;"></div>
             <?php

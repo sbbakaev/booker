@@ -17,7 +17,7 @@ class Viewer {
 
     public function addTemplate($template) {
         $file = './templates/' . $template . '.template.php';
-        //var_dump($file);
+        var_dump($file);
         if (file_exists($file)) {
             $this->templates[] = $file;
         } else {
