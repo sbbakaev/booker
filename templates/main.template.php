@@ -11,29 +11,33 @@
     </head>
 
     <body>
-        
+
         <div id="boardrooms" style="text-align:center; width: 100%;">
             <?php
-            foreach ($vars['boardrooms'] as $boardroom) {
+            foreach ($vars['boardrooms'] as $boardroom)
+            {
                 echo "<div>$boardroom</div>";
             }
             ?></div>
 
         <div id="main">
             <div id="month" class="month">
-                <div id="backMonth" style="border: medium solid; float: left;"><</div>
+                <a href="/?month=<?php echo $vars['prevMonth']; ?>&year=<?php echo $vars['prevYear']; ?>">
+                    <div id="previousMonth" style="border: medium solid; float: left;"><</div>
+                </a>
                 <div id="monthCurrent" style="border: medium solid; float: left;">
                     <?php
                     echo $vars['currentMonth'];
                     ?>
                 </div>
-                <a href="/?month=<?php echo $vars['nextMonth'];?>?year=<?php echo $vars['nextYear']; ?>">
-                <div id="nextMonth" style="border: medium solid; float: left;">></div>
+                <a href="/?month=<?php echo $vars['nextMonth']; ?>&year=<?php echo $vars['nextYear']; ?>">
+                    <div id="nextMonth" style="border: medium solid; float: left;">></div>
                 </a>
             </div>
             <div id="calendarMain" class="" style="clear: both;"></div>
             <?php
-            foreach ($templates as $template) {
+            foreach ($templates as $template)
+            {
                 include $template;
             }
             ?>            

@@ -8,7 +8,8 @@
             $firstDayMonth = $calendarData['firstDayMonth'];
             $firstDayWeek = $calendarData['firstDayWeek'];
 
-            if ($firstDayWeek == 0) {
+            if ($firstDayWeek == 0)
+            {
                 echo '<tr><td>Sunday</td>'
                 . '<td>Monday</td>'
                 . '<td>Tuesday</td>'
@@ -16,7 +17,8 @@
                 . '<td>Thursday</td>'
                 . '<td>Friday</td>'
                 . '<td>Saturday</td></tr>';
-            } else {
+            } else
+            {
                 echo '<tr><td>Monday</td>'
                 . '<td>Tuesday</td>'
                 . '<td>Wednesday</td>'
@@ -27,19 +29,24 @@
             }
             $countDay = 0;
 
-            if ($firstDayWeek != 0) {
-                if ($firstDayMonth == 0) {
+            if ($firstDayWeek != 0)
+            {
+                if ($firstDayMonth == 0)
+                {
                     $firstDayMonth = 7;
                 }
                 $firstDayMonth-=$firstDayWeek;
             }
-            if ($firstDayMonth != 0) {
+            if ($firstDayMonth != 0)
+            {
 
                 echo '<tr>';
-                for ($i = 0; $i < $firstDayMonth; $i++) {
+                for ($i = 0; $i < $firstDayMonth; $i++)
+                {
                     echo '<td class="cell"></td>';
                     $countDay++;
-                    if ($countDay == 7) {
+                    if ($countDay == 7)
+                    {
                         echo '</tr>';
                         $countDay = 0;
                     }
@@ -48,10 +55,13 @@
 
 
 
-            for ($i = 1; $i < $calendarData['countDayMonth'] + 1; $i++) {
-                if ($countDay == 0) {
+            for ($i = 1; $i < $calendarData['countDayMonth'] + 1; $i++)
+            {
+                if ($countDay == 0)
+                {
                     echo '<tr>';
-                } elseif ($countDay == 7) {
+                } elseif ($countDay == 7)
+                {
                     echo '</tr>';
                     $countDay = 0;
                 }

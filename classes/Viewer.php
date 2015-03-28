@@ -1,36 +1,44 @@
 <?php
 
-class Viewer {
+class Viewer
+{
 
     private $vars = array();
     private $templates = array();
     private $mainTemplate = 'main.template';
 
-    public function __construct($template = 'main.template') {
+    public function __construct($template = 'main.template')
+    {
         $file = './templates/' . $template . '.php';
-        if (file_exists($file)) {
+        if (file_exists($file))
+        {
             $this->mainTemplate = $file;
-        } else {
+        } else
+        {
             exit('server fail');
         }
     }
 
-    public function addTemplate($template) {
+    public function addTemplate($template)
+    {
         $file = './templates/' . $template . '.template.php';
-        var_dump($file);
-        if (file_exists($file)) {
+        if (file_exists($file))
+        {
             $this->templates[] = $file;
-        } else {
+        } else
+        {
             exit('template fail');
         }
         return $this;
     }
 
-    public function setVar($key, $val) {
+    public function setVar($key, $val)
+    {
         $this->vars[$key] = $val;
     }
 
-    public function render() {
+    public function render()
+    {
         $templates = $this->templates;
         $vars = $this->vars;
         include $this->mainTemplate;
