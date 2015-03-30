@@ -31,7 +31,6 @@ class UserController extends Controller
                 $extra = 'calendar.template.php';
                 header("Location: http://$host/event/showCalendar");
                 exit;
-                
             } else
             {
                 exit('empty login result');
@@ -45,7 +44,7 @@ class UserController extends Controller
     public static function checkAuth($class, $method)
     {
         session_start();
-        
+
         if (!isset($_SESSION['userData']))
         {
             if ($class != 'UserController' && $method != 'login')
@@ -59,6 +58,18 @@ class UserController extends Controller
         {
 
             return TRUE;
+        }
+    }
+
+    public function getUsers()
+    {
+        $logined = UserController::checkAuth('UserController', 'login');
+        if ($logined)
+        {
+            $res = $this->model->userList(array());
+            //var_dump($res);
+            $this->view->setVar('usersData',$res);
+            $this->view->addTemplate('users')->render();
         }
     }
 

@@ -11,7 +11,7 @@ class EventController extends Controller
 
     public function showCalendar()
     {
-        var_dump($_SESSION['userData']);
+        //var_dump($_SESSION['userData']);
         if (isset($this->data["month"]))
         {
             $month = (int) $this->data["month"];
@@ -53,5 +53,4 @@ class EventController extends Controller
         $this->view->addTemplate('calendar')->render();
     }
     
-
 }

@@ -10,7 +10,7 @@ class User extends sql
 
     public function userList($data)
     {
-        $query = 'SELECT * FROM user LEFT JOIN userPreference ON user.id = userPreference.idUser';
+        $query = 'SELECT user.id, `surname`,`name`,`username`,`mail`FROM `user` LEFT JOIN userPreference ON user.id = userPreference.idUser';
 
         $res = $this->getAll($query, $data);
         return $res;

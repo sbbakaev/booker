@@ -43,8 +43,10 @@
             ?>            
             <div id="helper" style="float: left;">
                 <div id="bookIt" class="button">book it</div>
+                
+                <a href="<?php echo '/user/getUsers'; ?>">                        
                 <div id="employeeList" class="button">Employee list</div>
-
+                 </a>
             </div>
         </div>
 
