@@ -15,7 +15,16 @@ class User extends sql
         $res = $this->getAll($query, $data);
         return $res;
     }
+    
+    public function deleteUser($data)
+    {
+        $query = 'DELETE FROM `user`  WHERE `user`.`id` = :id;'.
+                 'DELETE FROM `userPreference`  WHERE `userPreference`.`idUser` = :id';
 
+        $res = $this->executeQuery($query, $data);
+        return $res;
+    }
+    
     public function getPermision($username,$password)
     {
         $query = 'SELECT * FROM user LEFT JOIN userPreference'.

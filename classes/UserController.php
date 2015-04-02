@@ -19,10 +19,10 @@ class UserController extends Controller
 
     public function login()
     {
-        if (isset($this->postData['user']) && isset($this->postData['password']))
+        if (isset($this->dataPost['user']) && isset($this->dataPost['password']))
         {
-            $username = $this->postData['user'];
-            $password = $this->postData['password'];
+            $username = $this->dataPost['user'];
+            $password = $this->dataPost['password'];
             $res = $this->model->getPermision($username, $password);
             if (count($res) > 0)
             {
@@ -67,6 +67,18 @@ class UserController extends Controller
         if ($logined)
         {
             $res = $this->model->userList(array());
+            //var_dump($res);
+            $this->view->setVar('usersData',$res);
+            $this->view->addTemplate('users')->render();
+        }
+    }
+    
+        public function deleteUser()
+    {
+        $logined = UserController::checkAuth('UserController', 'login');
+        if ($logined)
+        {
+            $res = $this->model->deleteUser(array());
             //var_dump($res);
             $this->view->setVar('usersData',$res);
             $this->view->addTemplate('users')->render();

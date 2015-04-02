@@ -2,7 +2,8 @@
 
 class EventController extends Controller
 {
-    public function __construct($get,$post)
+
+    public function __construct($get, $post)
     {
         $this->model = new Event;
         $this->view = new Viewer;
@@ -52,5 +53,83 @@ class EventController extends Controller
         $this->view->setVar('calendarData', $caledarData);
         $this->view->addTemplate('calendar')->render();
     }
-    
+
+    public function validate()
+    {
+        $res = TRUE;
+
+        if (!isset($this->dataPost['username']))
+        {
+            $this->dataPost['username'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['month']))
+        {
+            $this->dataPost['month'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['hourStat']))
+        {
+            $this->dataPost['hourStat'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['minutStat']))
+        {
+            $this->dataPost['minutStat'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['timePrefStart']))
+        {
+            $this->dataPost['timePrefStart'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['hourEnd']))
+        {
+            $this->dataPost['hourEnd'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['minutEnd']))
+        {
+            $this->dataPost['minutEnd'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['timePrefEnd']))
+        {
+            $this->dataPost['timePrefEnd'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['meetingSpecText']))
+        {
+            $this->dataPost['meetingSpecText'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['recurringEvent']))
+        {
+            $this->dataPost['recurringEvent'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['recurringSpecify']))
+        {
+            $this->dataPost['recurringSpecify'];
+            $res = FALSE;
+        }
+        if (!isset($this->dataPost['durationEvents']))
+        {
+            $this->dataPost['durationEvents'];
+            $res = FALSE;
+        }
+        return $res;
+    }
+
+    public function addEvent()
+    {
+        if ($this->showCalendar())
+        {
+            $this->model = new Event;
+            $this->view = new Viewer;
+
+            $res = $this->model->addEvent($this->data);
+        }
+    }
+
 }

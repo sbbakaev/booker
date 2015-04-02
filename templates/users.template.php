@@ -15,6 +15,11 @@
                     '.$data['name'].' '.$data['surname'].'
                 </a>
             </div>
+            <div>
+                <a href="mailto:'.$data['mail'].'">
+                    '.$data['name'].' '.$data['surname'].'
+                </a>           
+            </div>
             
         </div>';
         }

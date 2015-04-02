@@ -4,12 +4,12 @@ class Controller
 {
     protected $model;
     protected $view;
-    protected $getData;
-    protected $postData;
+    protected $dataGet;
+    protected $dataPost;
 
     public function __construct($get,$post)
     {
-        $this->getData = $get;
-        $this->postData = $post;
+        $this->dataGet = $get;
+        $this->dataPost = $post;
     }
 }
