@@ -5,8 +5,8 @@ $(document).ready(function () {
         alert(a = 1);
     });
 
-    $('#employeeList').on('click', function () {
-        $('#monthCurrent').append('text');
+    $('#month').on('click', function () {
+        $('#meetingSpecText').append('text');
     });
 
 

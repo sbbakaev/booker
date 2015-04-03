@@ -22,6 +22,7 @@ class Viewer
     public function addTemplate($template)
     {
         $file = './templates/' . $template . '.template.php';
+       // var_dump($file);exit;
         if (file_exists($file))
         {
             $this->templates[] = $file;
@@ -30,6 +31,17 @@ class Viewer
             exit('template fail');
         }
         return $this;
+    }
+    public function setMainTemplate($template)
+    {
+        $file = './templates/' . $template . '.template.php';
+        if (file_exists($file))
+        {
+            $this->mainTemplate = $file;
+        } else
+        {
+            exit('server fail');
+        } 
     }
 
     public function setVar($key, $val)

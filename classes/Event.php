@@ -16,58 +16,27 @@ class Event extends sql
         return $res;
     }
 
-    public function addEvent($data)
+    public function checkEvent($data)
     {
+        $query = 'SELECT count(id) FROM  `event`' .
+                'WHERE  (`date_start` BETWEEN  :dateStart AND  :dateEnd)' .
+                'OR  (`date_end` BETWEEN  :dateStart AND  :dateEnd)' .
+                'OR (`date_start`< :dateStart AND `date_end`>:dateStart)' .
+                'OR  (`date_start`< :dateEnd AND `date_end`>:dateEnd)';
 
-      /*  $query = 'INSERT INTO event (`room_id`, `description`,`user_id`) '
-                . 'VALUES (:room_id, :description,:user_id)';
-        $params = array("room_id" => $data['room'], "description" => $data['description'], "user_id" => $data['user_id']);
-        $res = $this->executeQuery($query, $params);
+        $res = $this->getAll($query, $data);
+        echo '</br>//////';
+        var_dump($res);
+        echo '</br>//////';
+        return $res;
+    }
 
-        $recurringCount = $data['recurringCount'];
-        $recurringFrequency = $data['recurringFrequency'];
-        $dateStart = $data['dateStart'];
-        $dateEnd = $data['dateEnd'];
-        $dateStart = $data['dateStart'];
-        $params = [];
-        $temp = array();
-        if ($recurringCount > 0)
-        {
-            if ($recurringFrequency == "weekly")
-            {
-                $dateInterval = 'P7D';
-            } elseif ($recurringFrequency == "be-weekly")
-            {
-                $dateInterval = 'P7W';
-            } elseif ($recurringFrequency == "monthly")
-            {
-                $dateInterval = 'P1M';
-            }
-            for ($i = 0; $i <= $recurringCount; $i++)
-            {
-                if ($i == 0)
-                {
-                    $temp['dateStart'] = $dateStart;
-                    $temp['dateEnd'] = $dateEnd;
-                    $temp['recurrentId'] = $res;
-                } else
-                {
-                    $temp['dateStart'] = $dateStart->add(new DateInterval($dateInterval));
-                    $temp['dateEnd'] = $dateEnd->add(new DateInterval($dateInterval));
-                    $temp['recurrentId'] = $res;
-                }
-                $params[] = $temp;
-            }
-        }
-
-        $query = "INSERT INTO date_event (`recurrent_id`, `date_start`,`date_end`,"
-                . " `isAdmin`, `idUser`) VALUES (:recurrent_id, :date_start, :date_end)";
-        $params = array("recurrent_id" => "$recurrent_id",
-            "date_start" => "$date_start", "date_end" => "$date_end");
+    public function createEvent($data)
+    {
+        $query = 'INSERT INTO `event`(`user_id`, `description`, `room_id`, `date_end`, `date_start`) VALUES (:userId,:description,:roomId,:dateEnd,:dateStart)';
 
         $res = $this->executeQuery($query, $data);
         return $res;
-        */
     }
 
 }

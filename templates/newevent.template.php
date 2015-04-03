@@ -1,18 +1,13 @@
-
-<html>
-    <head>
-        <title>New event 
-        </title>
-    </head>
-
-    <body>
-        <form method="post">
+        <form method="post" action="/event/addEvent">
             1. Booked for: <br />
             <select name=username size=1>
-               <?php
-                foreach ($data['users'] as $key => $value){
-                   echo "<option value=$i>$value</option>";
-               } ?> 
+                <?php
+                foreach ($vars['users'] as $key => $value)
+                {
+                    //var_dump($vars['users']);
+                    echo '<option value = ' . $value['id'] . ' > ' . $value['name'] . ' ' . $value['surname'] . ' </option>';
+                }
+                ?> 
             </select><br/>
             2. I would like to book this meeting:<br />
             <select name=month size=1>
@@ -29,44 +24,70 @@
                 <option value=11>Nov</option>
                 <option value=12>Dec</option>
             </select>
+            <select name=days size=1>
+                <?php
+                for ($i = 1; $i <= 30; $i++)
+                {
+                    echo "<option value=$i>$i</option>";
+                }
+                ?>
+            </select> 
+            <select name=year size=1>
+                <?php
+                for ($i = 2014; $i <= 2016; $i++)
+                {
+                    echo "<option value=$i>$i</option>";
+                }
+                ?>
+            </select> 
             3. Specify what the time and end of the meeting.<br />
             <select name=hourStat size=1>
                 <?php
-                for($i=1;i<13;i++){
-                    echo "<option value=$i>$i</option>"
-                } ?>
+                for ($i = 1; $i <= 12; $i++)
+                {
+                    echo "<option value=$i>$i</option>";
+                }
+                ?>
             </select>          
             <select name=minutStat size=1>
                 <?php
-                for($i=1;i<61;i++){
-                    echo "<option value=$i>$i</option>"
-                } 
+                for ($i = 1; $i <= 60; $i++)
+                {
+                    echo "<option value=$i>$i</option>";
+                }
                 ?>
             </select>         
             <select name=timePrefStart size=1>
-                <?php for($i=1;i<61;i++){
-                    echo "<option value=$i>$i</option>"
-                } 
+                <?php
+                for ($i = 1; $i <= 60; $i++)
+                {
+                    echo "<option value=$i>$i</option>";
+                }
                 ?>
             </select> <br/>          
 
             <select name=hourEnd size=1>
                 <?php
-                for($i=1;i<=12;i++){
-                    echo "<option value=$i>$i</option>"
-                } ?>
+                for ($i = 1; $i <= 12; $i++)
+                {
+                    echo "<option value=$i>$i</option>";
+                }
+                ?>
             </select>           
             <select name=minutEnd size=1>
                 <?php
-                for($i=1;i<=60;i++){
-                    echo "<option value=$i>$i</option>"
-                } 
+                for ($i = 1; $i <= 60; $i++)
+                {
+                    echo "<option value=$i>$i</option>";
+                }
                 ?>
             </select>           
             <select name=timePrefEnd size=1>
-                <?php for($i=1;i<61;i++){
-                    echo "<option value=$i>$i</option>"
-                } 
+                <?php
+                for ($i = 1; $i <= 60; $i++)
+                {
+                    echo "<option value=$i>$i</option>";
+                }
                 ?>
             </select><br/>
             4. Enter the specifics for the meeting. <br />
@@ -81,11 +102,8 @@
             <input type=radio name=recurringSpecify value=month > <br/>
             7. Duration
             <input type=text name=durationEvents maxlen=1><br/>
-             
-        </form>
+     
 
-<br />
+        <br />
         <input type="submit" name="submit" value="Submit" />
     </form>
-</body>
-</html>

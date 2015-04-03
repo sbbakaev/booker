@@ -38,7 +38,6 @@ class Dispatcher
             $this->method = $dispatch[2];
         }
         $logined = UserController::checkAuth($this->class, $this->method);
-
         $object = new $this->class($_GET, $_POST);
         $object->{$this->method}();
     }

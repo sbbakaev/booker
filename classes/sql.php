@@ -19,7 +19,7 @@ class sql
             $result = $this->pdo->lastInsertId();
         } catch (PDOException $e)
         {
-            die('Method /"updateAll/" wasn`t execute.' . $e->getMessage());
+            die('Method /"executeQuery/" wasn`t execute.' . $e->getMessage());
         }
         return $result;
     }
