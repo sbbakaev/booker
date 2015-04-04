@@ -18,23 +18,25 @@ class Event extends sql
 
     public function checkEvent($data)
     {
-        $query = 'SELECT count(id) FROM  `event`' .
-                'WHERE  (`date_start` BETWEEN  :dateStart AND  :dateEnd)' .
+        var_dump($data);
+        $query = 'SELECT `id`,`date_start`,`date_end`  FROM  `event`' .
+                'WHERE  `room_id` = :roomId AND((`date_start` BETWEEN  :dateStart AND  :dateEnd)' .
                 'OR  (`date_end` BETWEEN  :dateStart AND  :dateEnd)' .
                 'OR (`date_start`< :dateStart AND `date_end`>:dateStart)' .
-                'OR  (`date_start`< :dateEnd AND `date_end`>:dateEnd)';
-
+                'OR  (`date_start`< :dateEnd AND `date_end`>:dateEnd))';
+        var_dump($query);
         $res = $this->getAll($query, $data);
-        echo '</br>//////';
         var_dump($res);
-        echo '</br>//////';
         return $res;
     }
 
     public function createEvent($data)
     {
-        $query = 'INSERT INTO `event`(`user_id`, `description`, `room_id`, `date_end`, `date_start`) VALUES (:userId,:description,:roomId,:dateEnd,:dateStart)';
 
+        $query = 'INSERT INTO `event`(`user_id`, `description`, `room_id`,'
+                . ' `date_end`, `date_start`) '
+                . 'VALUES (:userId,:description,:roomId,:dateEnd,:dateStart)';
+        var_dump($query);
         $res = $this->executeQuery($query, $data);
         return $res;
     }

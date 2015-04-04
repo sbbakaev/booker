@@ -104,7 +104,6 @@ class EventController extends Controller
         {
             $res = FALSE;
         }
-        //   var_dump($res);
         return $res;
     }
 
@@ -113,8 +112,6 @@ class EventController extends Controller
         if ($this->validate())
         {
 
-            //  var_dump($this->dataPost);
-            $data['userId'] = $this->dataPost['username'];
             $monthEvent = $this->dataPost['month'];
             $dayEvent = $this->dataPost['days'];
             $yearEvent = $this->dataPost['year'];
@@ -126,36 +123,83 @@ class EventController extends Controller
             $minutEnd = $this->dataPost['minutEnd'];
             $timePrefEnd = $this->dataPost['timePrefEnd'];
 
-            $eventDateStart = date(mktime($hourStat, $minutStat, 0, $monthEvent, $dayEvent, $yearEvent));
-            $eventDateEnd = date(mktime($hourEnd, $minutEnd, 0, $monthEvent, $dayEvent, $yearEvent));
-            $data['roomId'] = "1";
-            $data['description'] = $this->dataPost['meetingSpecText'];
-            //$recurringEvent = $this->dataPost['recurringEvent'];
+            $eventDateStart = mktime($hourStat, $minutStat, 0, $monthEvent, $dayEvent, $yearEvent);
+           // var_dump($eventDateStart);exit;
+            $eventDateEnd = mktime($hourEnd, $minutEnd, 0, $monthEvent, $dayEvent, $yearEvent);
+            $recurringEvent = $this->dataPost['recurringEvent'];
             $recurringSpecify = $this->dataPost['recurringSpecify'];
             $durationEvents = $this->dataPost['durationEvents'];
-            $data['dateStart'] = $eventDateStart;
-            $data['dateEnd'] = $eventDateEnd;
-            if ($this->model->checkEvent($data) == "0")
-            {
 
-                $this->model->createEvent($data);
-                exit('add');
-                return TRUE;
-                
+
+            $data = $this->getRecurringArray($eventDateStart, $eventDateEnd, $recurringSpecify, $recurringEvent,$durationEvents);
+            $dataCheck['dateStart'] = $eventDateStart;
+            $dataCheck['dateEnd'] = $eventDateEnd;
+            $dataCheck['roomId'] = '1';
+ 
+            
+            $eventInBD = $this->model->checkEvent($dataCheck);
+            if (empty($eventInBD))
+            {
+                foreach ($data as $value)
+                {
+                    $this->model->createEvent($value);
+                }
+                //  $this->model->createEvent($data);
             } else
             {
-                exit('not');
-                return FALSE;
+                foreach ($eventInBD as $value)
+                {
+                    $error = "Room is booked from " . $value['date_start'] . " to " . $value['date_end'];
+                    User::setFlash($error, 'errors');
+                    echo $error;
+                }
+                $errors = User::getFlash('errors');
             }
         } else
         {
             $this->view->setMainTemplate('blank');
             $tr = new User;
             $res = $tr->userList(NULL);
-//        var_dump($res);
+
             $this->view->setVar('users', $res);
             $this->view->addTemplate('newevent')->render();
         }
+    }
+
+    private function getRecurringArray($dateStart, $dateEnd, $recurringSpecify,$recurringEvent, $repeatCount)
+    {
+
+        $data[0]['dateStart'] = $dateStart;
+        $data[0]['dateEnd'] = $dateEnd;
+                $data[0]['userId'] = $this->dataPost['username'];
+                $data[0]['roomId'] = "1";
+                $data[0]['description'] = $this->dataPost['meetingSpecText'];
+        if ($recurringEvent=="yes")
+        {
+            if ($recurringSpecify == 'weekly')
+            {
+                $countRecurringSpecify = 7;
+            } elseif ($recurringSpecify == 'biWeekly')
+            {
+                $countRecurringSpecify = 14;
+            } elseif ($recurringSpecify == 'month')
+            {
+                //Делаю,потому что не всегда будет попадать в этот - же месяц.
+                $countRecurringSpecify = 24;
+            }
+            for ($i = 1; $i < $repeatCount; $i++)
+            {
+                $data[$i]['userId'] = $this->dataPost['username'];
+                $data[$i]['roomId'] = "1";
+                $data[$i]['description'] = $this->dataPost['meetingSpecText'];
+                $data[$i]['dateStart'] = $dateStart;
+                $data[$i]['dateEnd'] = $dateEnd;
+
+                $dateStart = strtotime("+$countRecurringSpecify day");
+                $dateEnd = strtotime("+$countRecurringSpecify day");
+            }
+        }
+        return $data;
     }
 
 }

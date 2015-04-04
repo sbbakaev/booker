@@ -11,7 +11,11 @@ class sql
     }
 
     public function executeQuery($query, $parameters)
-    {
+    {var_dump($query);
+        echo '</br>';
+               var_dump($parameters);
+        echo '</br>';
+ 
         try
         {
             $stmt = $this->pdo->prepare($query);

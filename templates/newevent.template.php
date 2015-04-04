@@ -99,7 +99,7 @@
             6. If it is recurring , specify weekly, bi-weekly, or month. <br/>
             <input type=radio name=recurringSpecify value=weekly checked>weekly
             <input type=radio name=recurringSpecify value=biWeekly checked>bi-weekly
-            <input type=radio name=recurringSpecify value=month > <br/>
+            <input type=radio name=recurringSpecify value=month >month <br/>
             7. Duration
             <input type=text name=durationEvents maxlen=1><br/>
      

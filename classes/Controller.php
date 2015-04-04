@@ -11,6 +11,5 @@ class Controller
     {
         $this->dataGet = $get;
         $this->dataPost = $post;
-        var_dump($this->dataPost);
     }
 }
