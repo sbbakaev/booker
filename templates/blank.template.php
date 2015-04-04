@@ -8,6 +8,18 @@
     </head>
 
     <body><?php
+        // var_dump($flash);
+        if (!empty($flash))
+        {
+           // var_dump($flash);
+            echo '<div>';
+            foreach ($flash as $value)
+            {
+                echo "$value";
+                echo '</br>';
+            }
+            echo '</div>';
+        }
         foreach ($templates as $template)
         {
             include $template;

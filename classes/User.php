@@ -38,16 +38,22 @@ class User extends sql
         return $res;
     }
 
-    public static function setFlash($data,$type)
+    public static function setFlash($data, $type)
     {
-        $_SESSION['flash'][$type] = $data;
+        $_SESSION['flash'][$type][] = $data;
     }
 
-    public static function getFlash($type='error')
+    public static function getFlash($type = 'error')
     {
 
-        $errors = $_SESSION['flash'][$type];
-        $_SESSION['flash'][$type] = array();
+        if (isset($_SESSION['flash'][$type]))
+        {
+            $errors = $_SESSION['flash'][$type];
+            $_SESSION['flash'][$type] = array();
+        } else
+        {
+            $errors = array();
+        }
         return $errors;
     }
 

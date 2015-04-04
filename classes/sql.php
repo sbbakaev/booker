@@ -11,11 +11,7 @@ class sql
     }
 
     public function executeQuery($query, $parameters)
-    {var_dump($query);
-        echo '</br>';
-               var_dump($parameters);
-        echo '</br>';
- 
+    {
         try
         {
             $stmt = $this->pdo->prepare($query);
@@ -28,12 +24,12 @@ class sql
         return $result;
     }
 
-    public function getAll($query, $parameters = null)
+    public function getAll($query)
     {
         try
         {
             $stmt = $this->pdo->prepare($query);
-            $stmt->execute($parameters);
+            $stmt->execute();
         } catch (PDOException $e)
         {
             die('Method /"getAll/" wasn`t execute.' . $e->getMessage());

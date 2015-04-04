@@ -7,7 +7,7 @@
             $calendarData = $vars['calendarData'];
             $firstDayMonth = $calendarData['firstDayMonth'];
             $firstDayWeek = $calendarData['firstDayWeek'];
-
+            $events = $vars['res'];
             if ($firstDayWeek == 0)
             {
                 echo '<tr><td>Sunday</td>'
@@ -66,7 +66,13 @@
                     $countDay = 0;
                 }
 
-                echo '<td class="cell">' . $i . '</td>';
+                echo '<td class="cell">' . $i . '</br>';
+               if (isset($events[$i]['id']))
+               {
+                   echo    $events[$i]['date_start'].'-';
+                   echo    $events[$i]['date_end'];
+               }
+                echo '</td>';
                 $countDay++;
             }
             ?>

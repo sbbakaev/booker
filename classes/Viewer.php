@@ -6,6 +6,7 @@ class Viewer
     private $vars = array();
     private $templates = array();
     private $mainTemplate = 'main.template';
+    private $flash = array();
 
     public function __construct($template = 'main.template')
     {
@@ -22,7 +23,7 @@ class Viewer
     public function addTemplate($template)
     {
         $file = './templates/' . $template . '.template.php';
-       // var_dump($file);exit;
+        // var_dump($file);exit;
         if (file_exists($file))
         {
             $this->templates[] = $file;
@@ -32,6 +33,7 @@ class Viewer
         }
         return $this;
     }
+
     public function setMainTemplate($template)
     {
         $file = './templates/' . $template . '.template.php';
@@ -41,18 +43,19 @@ class Viewer
         } else
         {
             exit('server fail');
-        } 
+        }
     }
 
     public function setVar($key, $val)
     {
         $this->vars[$key] = $val;
     }
-
+    
     public function render()
     {
         $templates = $this->templates;
         $vars = $this->vars;
+        $flash = User::getFlash('errors');
         include $this->mainTemplate;
     }
 
