@@ -24,12 +24,12 @@ class sql
         return $result;
     }
 
-    public function getAll($query)
+    public function getAll($query,$params)
     {
         try
         {
             $stmt = $this->pdo->prepare($query);
-            $stmt->execute();
+            $stmt->execute($params);
         } catch (PDOException $e)
         {
             die('Method /"getAll/" wasn`t execute.' . $e->getMessage());

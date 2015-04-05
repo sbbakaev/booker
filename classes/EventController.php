@@ -10,6 +10,70 @@ class EventController extends Controller
         parent::__construct($get, $post);
     }
 
+    public function showEventDetails()
+    {
+        if (isset($this->dataGet["id"]))
+        {
+            $id = (int) $this->dataGet["id"];
+            $params['id'] = $id;
+            $temp = $this->model->eventList($params);
+            var_dump($temp); exit;
+            $dateStart = new DateTime($temp[0]['date_start']);
+            $dateEnd = new DateTime($temp[0]['date_end']);
+            $res['dateEvent'] = $dateStart->format("Y-m-d H:i:s");
+            $res['date_start'] = $dateStart->format('H:i');
+            $res['date_end'] = $dateEnd->format('H:i');
+            $res['user'] = $temp[0]['name'] . ' ' . $temp[0]['surname'];
+            $res['description'] = $temp[0]['description'];
+            $res['eventId'] = $temp[0]['id'];
+            $res['dateCreateEvent'] = $temp[0]['date_create_event'];
+            echo json_encode($res);
+        }
+    }
+
+    public function updateEvent()
+    {
+
+        $date = explode(" ", $this->dataPost['eventDate']);
+
+        $eventDateStart = new DateTime($date[0] . $this->dataPost['dateStart']);
+        $eventDateEnd = new DateTime($date[0] . $this->dataPost['dateEnd']);
+
+        $data[0]['dateStart'] = $eventDateStart->format('Y-m-d H:i:s');
+        $data[0]['dateEnd'] = $eventDateEnd->format('Y-m-d H:i:s');
+        $data[0]['roomId'] = "1";
+        $data[0]['id'] = $this->dataPost['id'];
+        $data[0]['description'] = $this->dataPost['description'];
+ 
+        $dataCheck = $data;
+        foreach ($dataCheck as $key => $value)
+        {
+            unset($dataCheck[$key]['description']);
+        }
+
+        $canCreateEvent = TRUE;
+        //Проверяю свободное время
+        foreach ($dataCheck as $value)
+        {
+                        
+            $eventInBD = $this->model->checkEvent($value);
+            if (!empty($eventInBD))
+            {
+                $canCreateEvent = FALSE;
+            }
+        }
+        if ($canCreateEvent)
+        {
+            foreach ($data as $value)
+            {
+                $this->model->updateEvent($value);
+            }
+            $host = $_SERVER['HTTP_HOST'];
+            header("Location: http://$host");
+            exit;
+        }
+    }
+
     public function showCalendar()
     {
         //var_dump($_SESSION['userData']);
@@ -35,25 +99,36 @@ class EventController extends Controller
         $nextYear = date("Y", mktime(0, 0, 0, $month + 1, 1, $year));
         $year = date("Y", $currentDate);
         $month = date("m", $currentDate);
+        //количество дней в месяце
         $countDayMonth = date("t", mktime(0, 0, 0, $month, 1, $year));
         $firstDayMonth = date("w", mktime(0, 0, 0, $month, 1, $year));
         $firstDayWeek = 1;
         $caledarData = array("countDayMonth" => $countDayMonth,
             "firstDayWeek" => $firstDayWeek, "firstDayMonth" => $firstDayMonth,);
         //подготоваливаю данные для вывода событий в календарь.
-        $params['date_start'];
-                $params['date_end'];
+        $params['date_start'] = new DateTime(date("Y-m-d H:i:s", $currentDate));
+        $params['date_end'] = new DateTime(date("Y-m-d H:i:s", $currentDate));
+        $params['date_end']->add(new DateInterval('P' . $countDayMonth . 'D'));
+        $params['date_start'] = $params['date_start']->format('Y-m-d H:i:s');
+        $params['date_end'] = $params['date_end']->format('Y-m-d H:i:s');
+        /*      var_dump($params['date_start']);
+          echo '</br>';
+          var_dump($params['date_end']); */
         $res = $this->model->eventList($params);
+        $dataArray = array();
+
         foreach ($res as $value)
         {
+            $temp[] = array();
             $tmpStart = new DateTime($value['date_start']);
             $tmpEnd = new DateTime($value['date_end']);
-           // $value['date_start'];
-            $dataArray[$tmpStart->format('d')]=$value;
-            $dataArray[$tmpStart->format('d')]['date_start']=$tmpStart->format('H:i');
-            $dataArray[$tmpStart->format('d')]['date_end']=$tmpEnd->format('H:i');
+            // $value['date_start'];
+            $temp['id'] = $value['id'];
+            $temp['date_start'] = $tmpStart->format('H:i');
+            $temp['date_end'] = $tmpEnd->format('H:i');
+            $dataArray[$tmpStart->format('d')][] = $temp;
         }
-        var_dump($dataArray);
+        $eventDetails = $this->showEventDetails();
         $this->view->setVar('boardrooms', array("Room1", "Room2", "Room3"));
         $this->view->setVar('currentMonth', date("F", $currentDate));
         $this->view->setVar('prevMonth', $prevMonth);
@@ -63,6 +138,7 @@ class EventController extends Controller
         $this->view->setVar('nextYear', $nextYear);
         $this->view->setVar('calendarData', $caledarData);
         $this->view->setVar('res', $dataArray);
+        $this->view->setVar('eventDetails', $eventDetails);
         $this->view->addTemplate('calendar')->render();
     }
 
@@ -123,7 +199,7 @@ class EventController extends Controller
 
     public function addEvent()
     {
-       // $errors = User::getFlash('errors');
+        // $errors = User::getFlash('errors');
         if ($this->validate())
         {
 
@@ -165,19 +241,17 @@ class EventController extends Controller
                 foreach ($data as $value)
                 {
                     $this->model->createEvent($value);
-                    
                 }
                 $host = $_SERVER['HTTP_HOST'];
                 header("Location: http://$host");
                 exit;
- 
             } else
             {
                 foreach ($eventInBD as $value)
                 {
                     $error = "Room is booked from " . $value['date_start'] . " to " . $value['date_end'];
                     User::setFlash($error, 'errors');
-                    
+
                     $this->view->setMainTemplate('blank');
                     $user = new User;
                     $res = $user->userList(NULL);

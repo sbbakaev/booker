@@ -3,10 +3,27 @@
     width: 100px;
 }
 
-.button {
-    background-color: blue;
+.clear{
+    clear: both;
+}
+
+.details {
+    display: none;
+    background-color: red;
     border: 1px solid;
     border-radius: 10px;
+    height: 250px;
+    left: 250px;
+    margin: 10px;
+    position: absolute;
+    top: 250px;
+    width: 300px;
+}
+
+.button {
+    background-color: pink;
+    border: 1px solid;
+    border-radius: 5px;
     height: 50px;
     margin: 10px;
     width: 100px;

@@ -1,3 +1,4 @@
+
 <div id="calendar" class="Calendar" style="float: left;">
     <div id="helper"> </div>
     <table border="1">
@@ -67,11 +68,17 @@
                 }
 
                 echo '<td class="cell">' . $i . '</br>';
-               if (isset($events[$i]['id']))
-               {
-                   echo    $events[$i]['date_start'].'-';
-                   echo    $events[$i]['date_end'];
-               }
+                if (isset($events[$i][0]['id']))
+                {
+            
+                    foreach ($events[$i] as $value)
+                    {
+                        echo '<a href=/Event/showEventDetails?id='.$value['id'].' class="current">'.$value['date_start'] . '-';
+                        echo $value['date_end'].'</a>';
+                        echo '</br>';
+                    }
+                   
+                }
                 echo '</td>';
                 $countDay++;
             }

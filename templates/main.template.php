@@ -20,6 +20,7 @@
             }
             ?></div>
 
+
         <div id="main">
             <div id="month" class="month">
                 <a href="/?month=<?php echo $vars['prevMonth']; ?>&year=<?php echo $vars['prevYear']; ?>">
@@ -43,13 +44,40 @@
             ?>            
             <div id="helper" style="float: left;">
                 <a href="/Event/addEvent">
-                <div id="employeeList" class="button">book it</div>
+                    <div id="employeeList" class="button">book it</div>
                 </a>
                 <a href="<?php echo '/user/getUsers'; ?>">                        
-                <div id="employeeList" class="button">Employee list</div>
-                 </a>
+                    <div id="employeeList" class="button">Employee list</div>
+                </a>
             </div>
         </div>
+        <div id="eventdetails" class="details">
+            <div class="clear">
+                <div style="width: 50px;float: left">When:</div>
+                <input type="TEXT" id="dateStart" style="width: 60px;float: left"></input>
+                <input type="TEXT" id="dateEnd" style="width: 60px;float: left"></input>
+            </div>
+            <div   class="clear">
+                <div style="width: 50px;float: left">Notes:</div>
+                <input type="TEXT" id = "description" style="width: 100px;float: left"></input>
+            </div>
+            <div   class="clear">
+                <div style="width: 50px;float: left">Who:</div>
+                <input type="TEXT" id = "user" style="width: 200px;float: left"></input>
+            </div>
+            <div   class="clear">
+                <div style="width: 50px;float: left">Submitted:</div>
+                <input type="TEXT" id = "dateSubmitted" style="width: 200px;float: left"></input>
+            </div>
+            <div>
+                <a href="/Event/updateEvent" style="float: left" id = "update"><div class="button">Update</div></a>
+                <a href=""style="float: left" id = "delete"<div class="button">Delete</div></a>
+                <div>
+                    <input type="hidden" id="eventDate" ></input>
+                    <input type="hidden" id="eventId" ></input>
+                </div>
+
+            </div>
 
 
     </body>
