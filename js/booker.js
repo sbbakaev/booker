@@ -11,15 +11,15 @@ $(document).ready(function () {
 
     $('html').on('click', function () {
         $('#eventdetails').hide();
-        
+
     });
-    
+
     $('#eventdetails').on('click', function (event) {
         event.stopPropagation();
     });
-    
-    
-    
+
+
+
     $('.current').on('click', function (event) {
         event.preventDefault();
 
@@ -63,26 +63,24 @@ $(document).ready(function () {
         postData.dateEnd = $('#dateEnd').val();
         postData.id = $('#eventId').text();
         //$.param(postData);
-       // alert($('#eventId').text());
+        // alert($('#eventId').text());
         console.log($('#eventId').val());
         $.ajax({
             type: "POST", //тут тип запрос (GET,POST,PUT,DELETE)
             url: url, //тут урл запроса
             data: $.param(postData),
             processData: true,
-           // dataType: 'json',
+            dataType: 'json',
             error: function (res)
             {
                 //ТУТ ЧТОТ ДЕЛАЕМ ЕСЛИ СЕРВЕР ВЕРНУЛ ОШИБКУ
             },
             success: function (res) {
-                     /*9   console.log(event);
-                $('#dateStart').val(res.date_start);
-                $('#dateEnd').val(res.date_end);
-                $('#description').val(res.description);
-                $('#user').val(res.user);
-                $('#dateSubmitted').val(res.dateCreateEvent);
-                $('#eventdetails').show();*/
+                console.log(res);
+                if (res.success)
+                {
+                    $('#eventdetails').hide();
+                }
             }
         });
 

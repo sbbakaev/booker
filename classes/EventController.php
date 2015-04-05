@@ -17,7 +17,6 @@ class EventController extends Controller
             $id = (int) $this->dataGet["id"];
             $params['id'] = $id;
             $temp = $this->model->eventList($params);
-            var_dump($temp); exit;
             $dateStart = new DateTime($temp[0]['date_start']);
             $dateEnd = new DateTime($temp[0]['date_end']);
             $res['dateEvent'] = $dateStart->format("Y-m-d H:i:s");
@@ -68,8 +67,10 @@ class EventController extends Controller
             {
                 $this->model->updateEvent($value);
             }
-            $host = $_SERVER['HTTP_HOST'];
-            header("Location: http://$host");
+            $respone = array();
+            $respone['success'] = TRUE;
+            $respone['message'] = 'Event has been updated';
+            echo json_encode($respone);
             exit;
         }
     }
@@ -111,9 +112,7 @@ class EventController extends Controller
         $params['date_end']->add(new DateInterval('P' . $countDayMonth . 'D'));
         $params['date_start'] = $params['date_start']->format('Y-m-d H:i:s');
         $params['date_end'] = $params['date_end']->format('Y-m-d H:i:s');
-        /*      var_dump($params['date_start']);
-          echo '</br>';
-          var_dump($params['date_end']); */
+
         $res = $this->model->eventList($params);
         $dataArray = array();
 

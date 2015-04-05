@@ -12,7 +12,7 @@ class Event extends sql
     {
         if (isset($params['id']))
         {
-            $query = 'SELECT * FROM event ev '
+            $query = 'SELECT ev.*, u.surname as surname, u.name as name FROM event ev '
                     . 'LEFT JOIN user u ON ev.user_id = u.id'
                     . ' WHERE ev.id=:id';
         } else
@@ -25,9 +25,9 @@ class Event extends sql
 
     public function checkEvent($params)
     {
-        if(isset($params['id']))
-        {var_dump($params);
-echo '</br>';
+        if (isset($params['id']))
+        {
+
             $query = 'SELECT `id`,`date_start`,`date_end`  FROM  `event`' .
                     'WHERE  `room_id` = :roomId AND `id`!=:id AND ((`date_start` BETWEEN  :dateStart AND  :dateEnd)' .
                     'OR  (`date_end` BETWEEN  :dateStart AND  :dateEnd)' .
@@ -42,15 +42,13 @@ echo '</br>';
                     'OR  (`date_start`< :dateEnd AND `date_end`>:dateEnd))';
         }
         $res = $this->getAll($query, $params);
-var_dump($res);exit;
         return $res;
     }
 
     public function updateEvent($data)
     {
-                var_dump($data);exit;
-
-        $query = 'UPDATE  `event` `date_start`=:date_start, `date_end`=:date_end,'
+        //var_dump($data);exit;
+        $query = 'UPDATE  `event` SET `room_id`=:roomId, `date_start`=:dateStart, `date_end`=:dateEnd,'
                 . '`description`=:description WHERE `id`=:id';
 
         $res = $this->executeQuery($query, $data);
