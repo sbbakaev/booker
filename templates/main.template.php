@@ -69,11 +69,16 @@
                 <div style="width: 50px;float: left">Submitted:</div>
                 <input type="TEXT" id = "dateSubmitted" style="width: 200px;float: left"></input>
             </div>
+            <div class="clear">
+                <input type=checkbox name="deleteAllEvent" value="TRUE" >
+                <span> Apply to all occurrences? </span>
+            </div>
             <div>
                 <a href="/Event/updateEvent" style="float: left" id = "update"><div class="button">Update</div></a>
-                <a href=""style="float: left" id = "delete"<div class="button">Delete</div></a>
+                <a href="/Event/deleteEvent"style="float: left" id = "delete"><div class="button">Delete</div></a>
                 <div>
                     <input type="hidden" id="eventDate" ></input>
+                    <input type="hidden" id="recurrentId" ></input>
                     <input type="hidden" id="eventId" ></input>
                 </div>
 

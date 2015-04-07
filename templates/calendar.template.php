@@ -68,6 +68,7 @@
                 }
 
                 echo '<td class="cell">' . $i . '</br>';
+                //var_dump($events);
                 if (isset($events[$i][0]['id']))
                 {
             

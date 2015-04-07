@@ -23,6 +23,18 @@ class sql
         }
         return $result;
     }
+        public function executeDeleteQuery($query, $parameters)
+    {
+        try
+        {
+            $stmt = $this->pdo->prepare($query);
+            $result = $stmt->execute($parameters);
+        } catch (PDOException $e)
+        {
+            die('Method /"executeDeleteQuery/" wasn`t execute.' . $e->getMessage());
+        }
+        return $result;
+    }
 
     public function getAll($query,$params)
     {

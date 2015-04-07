@@ -12,6 +12,7 @@ class EventController extends Controller
 
     public function showEventDetails()
     {
+        //  var_dump($this->dataGet["id"]); exit;
         if (isset($this->dataGet["id"]))
         {
             $id = (int) $this->dataGet["id"];
@@ -25,9 +26,33 @@ class EventController extends Controller
             $res['user'] = $temp[0]['name'] . ' ' . $temp[0]['surname'];
             $res['description'] = $temp[0]['description'];
             $res['eventId'] = $temp[0]['id'];
+            $res['recurrentId'] = $temp[0]['recurrent_id'];
             $res['dateCreateEvent'] = $temp[0]['date_create_event'];
             echo json_encode($res);
         }
+    }
+
+    public function deleteEvent()
+    {
+        var_dump($this->dataPost);
+        if (isset($this->dataPost['deleteAllEvent']))
+        {
+            if ($this->dataPost['deleteAllEvent']!="false")
+            {
+                $data['recurrent_id'] = $this->dataPost['recurrentId'];
+            } else
+            {
+
+                $data['id'] = $this->dataPost['id'];
+            }
+        }
+        $res = $this->model->deleteEvent($data);
+        var_dump($data);
+        $respone = array();
+        $respone['success'] = TRUE;
+        $respone['message'] = 'Event has been deleted';
+        echo json_encode($respone);
+        exit;
     }
 
     public function updateEvent()
@@ -43,7 +68,7 @@ class EventController extends Controller
         $data[0]['roomId'] = "1";
         $data[0]['id'] = $this->dataPost['id'];
         $data[0]['description'] = $this->dataPost['description'];
- 
+
         $dataCheck = $data;
         foreach ($dataCheck as $key => $value)
         {
@@ -54,7 +79,7 @@ class EventController extends Controller
         //Проверяю свободное время
         foreach ($dataCheck as $value)
         {
-                        
+
             $eventInBD = $this->model->checkEvent($value);
             if (!empty($eventInBD))
             {
@@ -114,6 +139,7 @@ class EventController extends Controller
         $params['date_end'] = $params['date_end']->format('Y-m-d H:i:s');
 
         $res = $this->model->eventList($params);
+
         $dataArray = array();
 
         foreach ($res as $value)
@@ -125,9 +151,10 @@ class EventController extends Controller
             $temp['id'] = $value['id'];
             $temp['date_start'] = $tmpStart->format('H:i');
             $temp['date_end'] = $tmpEnd->format('H:i');
-            $dataArray[$tmpStart->format('d')][] = $temp;
+            $dataArray[(int) $tmpStart->format('d')][] = $temp;
         }
         $eventDetails = $this->showEventDetails();
+        //   var_dump($res);
         $this->view->setVar('boardrooms', array("Room1", "Room2", "Room3"));
         $this->view->setVar('currentMonth', date("F", $currentDate));
         $this->view->setVar('prevMonth', $prevMonth);
@@ -237,9 +264,21 @@ class EventController extends Controller
             }
             if ($canCreateEvent)
             {
+                $insertId = NULL;
                 foreach ($data as $value)
                 {
-                    $this->model->createEvent($value);
+                    $value['insertId'] = $insertId;
+                    if ($insertId == NULL)
+                    {
+                        $insertId = $this->model->createEvent($value);
+
+                        $temp['id'] = $insertId;
+                        //var_dump($temp,$value);
+                        $this->model->updateRecurrentEvent($temp);
+                    } else
+                    {
+                        $this->model->createEvent($value);
+                    };
                 }
                 $host = $_SERVER['HTTP_HOST'];
                 header("Location: http://$host");

@@ -10,6 +10,7 @@ class Event extends sql
 
     public function eventList($params)
     {
+
         if (isset($params['id']))
         {
             $query = 'SELECT ev.*, u.surname as surname, u.name as name FROM event ev '
@@ -19,7 +20,9 @@ class Event extends sql
         {
             $query = 'SELECT * FROM event WHERE date_start>=:date_start AND date_end<:date_end';
         }
+
         $res = $this->getAll($query, $params);
+
         return $res;
     }
 
@@ -55,14 +58,36 @@ class Event extends sql
         return $res;
     }
 
+    public function updateRecurrentEvent($data)
+    {
+        $query = 'UPDATE  `event` SET `recurrent_id`=:id WHERE `id`=:id';
+
+        $res = $this->executeQuery($query, $data);
+        return $res;
+    }
+
     public function createEvent($data)
     {
 
         $query = 'INSERT INTO `event`(`user_id`, `description`, `room_id`,'
-                . ' `date_end`, `date_start`) '
-                . 'VALUES (:userId,:description,:roomId,:dateEnd,:dateStart)';
+                . ' `date_end`, `date_start`,`recurrent_id`) '
+                . 'VALUES (:userId,:description,:roomId,:dateEnd,:dateStart,:insertId)';
 
         $res = $this->executeQuery($query, $data);
+        return $res;
+    }
+
+    public function deleteEvent($data)
+    {
+        if (isset($data['recurrent_id']))
+        {
+            $query = 'DELETE FROM `event` WHERE `recurrent_id` =:recurrent_id';
+        } else
+        {
+            $query = 'DELETE FROM `event` WHERE `id` = :id';
+        }
+        $res = $this->executeDeleteQuery($query, $data);
+
         return $res;
     }
 
