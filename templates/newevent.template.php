@@ -1,4 +1,4 @@
-<form method="post" action="/event/addEvent">
+<form method="post" action="/event/addEvent" id = "newevent">
     1. Booked for: <br />
     <select name=username size=1>
         <?php
@@ -81,8 +81,8 @@
     <textarea name=meetingSpecText rows=5 wrap=Virtual id = "meetingSpecText">
     </textarea><br />
     5. Is this going to be a recurring event?<br/>
-    <input type=radio name=recurringEvent value=yes checked>Yes
-    <input type=radio name=recurringEvent value=no>No<br/>
+    <input type=radio name=recurringEvent value=yes checked >Yes
+    <input type=radio name=recurringEvent value=no >No<br/>
     6. If it is recurring , specify weekly, bi-weekly, or month. <br/>
     <input type=radio name=recurringSpecify value=weekly checked>weekly
     <input type=radio name=recurringSpecify value=biWeekly checked>bi-weekly

@@ -39,8 +39,7 @@ class sql
     public function getAll($query,$params)
     {
         try
-        {
-            $stmt = $this->pdo->prepare($query);
+        {   $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
         } catch (PDOException $e)
         {

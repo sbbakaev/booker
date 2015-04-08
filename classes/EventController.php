@@ -32,12 +32,16 @@ class EventController extends Controller
         }
     }
 
+    /**
+     * Метод удаляет событие. Если есть отметка об удалении всех связаных событий,
+     *  то удаляет их все.
+     * @return json object
+     */
     public function deleteEvent()
     {
-        var_dump($this->dataPost);
         if (isset($this->dataPost['deleteAllEvent']))
         {
-            if ($this->dataPost['deleteAllEvent']!="false")
+            if ($this->dataPost['deleteAllEvent'] != "false")
             {
                 $data['recurrent_id'] = $this->dataPost['recurrentId'];
             } else
@@ -47,7 +51,6 @@ class EventController extends Controller
             }
         }
         $res = $this->model->deleteEvent($data);
-        var_dump($data);
         $respone = array();
         $respone['success'] = TRUE;
         $respone['message'] = 'Event has been deleted';
@@ -65,7 +68,7 @@ class EventController extends Controller
 
         $data[0]['dateStart'] = $eventDateStart->format('Y-m-d H:i:s');
         $data[0]['dateEnd'] = $eventDateEnd->format('Y-m-d H:i:s');
-        $data[0]['roomId'] = "1";
+        $data[0]['roomId'] = $_SESSION['room']['id'];
         $data[0]['id'] = $this->dataPost['id'];
         $data[0]['description'] = $this->dataPost['description'];
 
@@ -103,6 +106,21 @@ class EventController extends Controller
     public function showCalendar()
     {
         //var_dump($_SESSION['userData']);
+
+        if (isset($this->dataGet["room"]))
+        {
+            $room = $this->dataGet["room"];
+            $_SESSION['room'] = $room;
+        } else
+        {
+            $rooms = $this->model->getRooms();
+            $room = $rooms[0];
+            $_SESSION['room'] = $room;
+            $_SESSION['rooms'] = $rooms;
+        }
+
+
+        // var_dump($room);
         if (isset($this->dataGet["month"]))
         {
             $month = (int) $this->dataGet["month"];
@@ -154,8 +172,8 @@ class EventController extends Controller
             $dataArray[(int) $tmpStart->format('d')][] = $temp;
         }
         $eventDetails = $this->showEventDetails();
-        //   var_dump($res);
-        $this->view->setVar('boardrooms', array("Room1", "Room2", "Room3"));
+
+        $this->view->setVar('boardrooms', $_SESSION['rooms']);
         $this->view->setVar('currentMonth', date("F", $currentDate));
         $this->view->setVar('prevMonth', $prevMonth);
         $this->view->setVar('prevYear', $prevYear);
@@ -314,7 +332,7 @@ class EventController extends Controller
         $data[0]['dateStart'] = $dateStart->format('Y-m-d H:i:s');
         $data[0]['dateEnd'] = $dateEnd->format('Y-m-d H:i:s');
         $data[0]['userId'] = $this->dataPost['username'];
-        $data[0]['roomId'] = "1";
+        $data[0]['roomId'] = $_SESSION['room']['id'];
         $data[0]['description'] = $this->dataPost['meetingSpecText'];
         if ($recurringEvent == "yes")
         {
@@ -334,7 +352,7 @@ class EventController extends Controller
                 $dateStart->add(new DateInterval('P' . $countRecurringSpecify . 'D'));
                 $dateEnd->add(new DateInterval('P' . $countRecurringSpecify . 'D'));
                 $data[$i]['userId'] = $this->dataPost['username'];
-                $data[$i]['roomId'] = "1";
+                $data[$i]['roomId'] = $_SESSION['room']['id'];
                 $data[$i]['description'] = $this->dataPost['meetingSpecText'];
                 $data[$i]['dateStart'] = $dateStart->format('Y-m-d H:i:s');
                 $data[$i]['dateEnd'] = $dateEnd->format('Y-m-d H:i:s');

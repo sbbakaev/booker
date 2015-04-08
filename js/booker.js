@@ -182,11 +182,16 @@ $(document).ready(function () {
                 }
             }
         });
-
         console.log(url);
-        //alert('aee');
+    });
 
-        // $('#meetingSpecText').append('text');
+    $('#newevent').submit(function () {
+        if($('[name="recurringEvent"]:checked').val()=="yes"){
+            if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
+                alert('Duration value of events must be from 1 to 4');
+                return false;
+            }
+        }
     });
 
     $('#delete').on('click', function (event) {
@@ -196,7 +201,7 @@ $(document).ready(function () {
         /*    postData.eventDate = $('#eventDate').text();
          postData.dateStart = $('#dateStart').val();
          postData.dateEnd = $('#dateEnd').val();*/
-         postData.recurrentId = $('#recurrentId').text();
+        postData.recurrentId = $('#recurrentId').text();
         postData.deleteAllEvent = $('input[name="deleteAllEvent"]').prop('checked');
         //alert($('input[name="deleteAllEvent"]').prop('checked'));
         postData.id = $('#eventId').text();

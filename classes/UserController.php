@@ -17,6 +17,17 @@ class UserController extends Controller
         $this->view->addTemplate('asd')->render();
     }
 
+    public function logout()
+    {
+        if (isset($this->dataGet['logout']))
+        {
+            session_destroy();
+            $host = $_SERVER['HTTP_HOST'];
+            header("Location: http://$host/user/login");
+            exit;
+        }
+    }
+
     public function login()
     {
         if (isset($this->dataPost['user']) && isset($this->dataPost['password']))
@@ -43,7 +54,10 @@ class UserController extends Controller
 
     public static function checkAuth($class, $method)
     {
-        session_start();
+        if (!session_id())
+        {
+            session_start();
+        }
 
         if (!isset($_SESSION['userData']))
         {
@@ -68,19 +82,19 @@ class UserController extends Controller
         {
             $res = $this->model->userList(array());
             //var_dump($res);
-            $this->view->setVar('usersData',$res);
+            $this->view->setVar('usersData', $res);
             $this->view->addTemplate('users')->render();
         }
     }
-    
-        public function deleteUser()
+
+    public function deleteUser()
     {
         $logined = UserController::checkAuth('UserController', 'login');
         if ($logined)
         {
             $res = $this->model->deleteUser(array());
             //var_dump($res);
-            $this->view->setVar('usersData',$res);
+            $this->view->setVar('usersData', $res);
             $this->view->addTemplate('users')->render();
         }
     }

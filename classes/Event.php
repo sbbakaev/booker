@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Модель для работы с событиями.
+ * @author Сергей Бакаев <sbbakaev@mail.ru>
+ */
 class Event extends sql
 {
 
@@ -8,6 +11,11 @@ class Event extends sql
         parent::__construct();
     }
 
+    /**
+     * Получает все события удовлетворяющие условию.
+     * @param array $params содержит id или дату создания и дату конца события.
+     * @return array событий с детальными данными о них.
+     */
     public function eventList($params)
     {
 
@@ -87,6 +95,16 @@ class Event extends sql
             $query = 'DELETE FROM `event` WHERE `id` = :id';
         }
         $res = $this->executeDeleteQuery($query, $data);
+
+        return $res;
+    }
+
+    public function getRooms()
+    {
+        $data = array();
+        $query = 'SELECT *  FROM `rooms`';
+
+        $res = $this->getAll($query, $data);
 
         return $res;
     }
