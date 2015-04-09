@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Модель для работы с сотрудниками.
+ * @author Сергей Бакаев <sbbakaev@mail.ru>
+ */
 class User extends sql
 {
 
@@ -8,11 +12,16 @@ class User extends sql
         parent::__construct();
     }
 
-    public function updateUser($data)
+    /**
+     * Обновляет данные по сотруднику и настройкам сотрудника.
+     * @param array $params содержит name, password, surname, username, mail,
+     *  id, firstDayWeek, isAdmin, timeFormat24, idUser.
+     * @return int последнего добавленного события.
+     */
+    public function updateUser($params)
     {
-       
-        if (isset($data['password']))
-        { 
+        if (isset($params['password']))
+        {
             $query = 'UPDATE  boardroom.user  SET `name`=:name, `password`=:password, `surname`=:surname,'
                     . '`username`=:username ,`mail`=:mail WHERE `id`=:id;'
                     . 'UPDATE  boardroom.userPreference  '
@@ -26,19 +35,30 @@ class User extends sql
                     . 'SET `firstDayWeek`=:firstDayWeek, `isAdmin`=:isAdmin, '
                     . '`timeFormat24`=:timeFormat24 WHERE `idUser`=:idUser';
         }
-        $res = $this->executeQuery($query, $data);
+
+        $res = $this->executeQuery($query, $params);
         return $res;
     }
 
+    /**
+     * Добавляет данные по сотруднику.
+     * @param array $params содержит name, password, surname, username, mail.
+     * @return int последнего добавленного события.
+     */
     public function createUser($data)
     {
         $query = 'INSERT INTO  `boardroom`.`user` ('
                 . '`name` , `surname` , `password` , `username` , `mail`)'
                 . 'VALUES (:name,  :surname, :password, :username, :mail)';
-         $res = $this->executeQuery($query, $data);
+        $res = $this->executeQuery($query, $data);
         return $res;
     }
 
+    /**
+     * Добавляет данные по настройкам сотрудника.
+     * @param array $params содержит timeFormat24, firstDayWeek, isAdmin, idUser.
+     * @return int последнего добавленного события.
+     */
     public function addPreference($data)
     {
         $query = 'INSERT INTO `boardroom`.`userPreference`'
@@ -46,10 +66,14 @@ class User extends sql
                 . '(:timeFormat24,:firstDayWeek,:isAdmin,:idUser)';
 
         $res = $this->executeQuery($query, $data);
-        //var_dump($res);
         return $res;
     }
 
+     /**
+     * Получает всех пользователей удовлетворяющих.
+     * @param array $params содержит id или дату создания и дату конца события.
+     * @return array событий с детальными данными о них.
+     */
     public function userList($data)
     {
         $query = 'SELECT user.id, `surname`,`name`,`username`,`mail`FROM `user` LEFT JOIN userPreference ON user.id = userPreference.idUser';

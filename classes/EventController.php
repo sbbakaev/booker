@@ -118,8 +118,6 @@ class EventController extends Controller
             $_SESSION['rooms'] = $rooms;
         }
 
-
-        // var_dump($room);
         if (isset($this->dataGet["month"]))
         {
             $month = (int) $this->dataGet["month"];

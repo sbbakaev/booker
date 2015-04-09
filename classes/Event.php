@@ -27,7 +27,7 @@ class Event extends sql
                     . ' WHERE ev.id=:id';
         } else
         {
-            $query = 'SELECT * FROM event WHERE date_start>=:date_start AND date_end<:date_end';
+            $query = 'SELECT * FROM event WHERE room_id =:room_id AND date_start>=:date_start AND date_end<:date_end';
         }
 
         $res = $this->getAll($query, $params);
@@ -113,7 +113,7 @@ class Event extends sql
      * Удаляет одну запись по id или все записи по полю recurrent_id.
      * @param array $params может содержать поле id или recurrent_id. 
      * date_end, date_start, recurrent_id.
-     * @return int последнего добавленного события.
+     * @return boolean true если операция прошла успешно.
      */
     public function deleteEvent($params)
     {
@@ -124,18 +124,21 @@ class Event extends sql
         {
             $query = 'DELETE FROM `event` WHERE `id` = :id';
         }
-        $res = $this->executeDeleteQuery($query, $params);
 
+        $res = $this->executeDeleteQuery($query, $params);
         return $res;
     }
 
+    /**
+     * Получает все комнаты из базы данных
+     * @return array комнат.
+     */
     public function getRooms()
     {
         $data = array();
         $query = 'SELECT *  FROM `rooms`';
 
         $res = $this->getAll($query, $data);
-
         return $res;
     }
 
