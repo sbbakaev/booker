@@ -82,7 +82,12 @@ class User extends sql
         return $res;
     }
 
-    public function deleteUser($data)
+     /**
+     * Удаляет сотрудника и его настройкивсех пользователей удовлетворяющих.
+     * @param array $params содержит id или дату создания и дату конца события.
+     * @return array событий с детальными данными о них.
+     */
+     public function deleteUser($data)
     {
         $query = 'DELETE FROM `user`  WHERE `user`.`id` = :userid;' .
                 'DELETE FROM `userPreference`  WHERE `userPreference`.`idUser` = :userid';
