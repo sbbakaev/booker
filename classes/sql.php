@@ -23,7 +23,8 @@ class sql
         }
         return $result;
     }
-        public function executeDeleteQuery($query, $parameters)
+
+    public function executeDeleteQuery($query, $parameters)
     {
         try
         {
@@ -36,10 +37,11 @@ class sql
         return $result;
     }
 
-    public function getAll($query,$params)
+    public function getAll($query, $params)
     {
         try
-        {   $stmt = $this->pdo->prepare($query);
+        {
+            $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
         } catch (PDOException $e)
         {

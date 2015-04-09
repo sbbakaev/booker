@@ -7,7 +7,6 @@
     <body>
         <div>
             <?php
-             var_dump($vars['usersData']);
             foreach ($vars['usersData'] as $data)
             {
                 {

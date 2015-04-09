@@ -12,7 +12,6 @@ class EventController extends Controller
 
     public function showEventDetails()
     {
-        //  var_dump($this->dataGet["id"]); exit;
         if (isset($this->dataGet["id"]))
         {
             $id = (int) $this->dataGet["id"];

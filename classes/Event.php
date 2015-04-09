@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Модель для работы с событиями.
  * @author Сергей Бакаев <sbbakaev@mail.ru>
@@ -34,6 +35,12 @@ class Event extends sql
         return $res;
     }
 
+    /**
+     * Получает все события удовлетворяющие условию.
+     * @param array $params содержит id или дату создания и дату конца события и
+     *  id комнаты.
+     * @return array событий с датой начала и датой конца.
+     */
     public function checkEvent($params)
     {
         if (isset($params['id']))
@@ -56,45 +63,68 @@ class Event extends sql
         return $res;
     }
 
-    public function updateEvent($data)
+    /**
+     * Обновляет одно событие новыми данными.
+     * @param array $params содержит id или дату создания и дату конца события,
+     * описание события и id комнаты.
+     * @return int последнего добавленного события.
+     */
+    public function updateEvent($params)
     {
         //var_dump($data);exit;
         $query = 'UPDATE  `event` SET `room_id`=:roomId, `date_start`=:dateStart, `date_end`=:dateEnd,'
                 . '`description`=:description WHERE `id`=:id';
 
-        $res = $this->executeQuery($query, $data);
+        $res = $this->executeQuery($query, $params);
         return $res;
     }
 
-    public function updateRecurrentEvent($data)
+    /**
+     * Обновляет одно событие для заполнения связующего поля recurrent_id.
+     * @param array $params содержит id.
+     * @return int последнего добавленного события.
+     */
+    public function updateRecurrentEvent($params)
     {
         $query = 'UPDATE  `event` SET `recurrent_id`=:id WHERE `id`=:id';
 
-        $res = $this->executeQuery($query, $data);
+        $res = $this->executeQuery($query, $params);
         return $res;
     }
 
-    public function createEvent($data)
+    /**
+     * Делает запись одного события с детальными данными.
+     * @param array $params содержит поля id, user_id, description, room_id, 
+     * date_end, date_start, recurrent_id.
+     * @return int последнего добавленного события.
+     */
+    public function createEvent($params)
     {
 
         $query = 'INSERT INTO `event`(`user_id`, `description`, `room_id`,'
                 . ' `date_end`, `date_start`,`recurrent_id`) '
                 . 'VALUES (:userId,:description,:roomId,:dateEnd,:dateStart,:insertId)';
 
-        $res = $this->executeQuery($query, $data);
+        $res = $this->executeQuery($query, $params);
         return $res;
     }
 
-    public function deleteEvent($data)
+    /**
+     * Удаляет одну запись по id или все записи по полю recurrent_id.
+     * @param array $params может содержать поле id или recurrent_id. 
+     * date_end, date_start, recurrent_id.
+     * @return int последнего добавленного события.
+     */
+    public function deleteEvent($params)
     {
-        if (isset($data['recurrent_id']))
+        if (isset($params['recurrent_id']))
         {
             $query = 'DELETE FROM `event` WHERE `recurrent_id` =:recurrent_id';
         } else
         {
             $query = 'DELETE FROM `event` WHERE `id` = :id';
         }
-        $res = $this->executeDeleteQuery($query, $data);
+        $res = $this->executeDeleteQuery($query, $params);
 
         return $res;
     }

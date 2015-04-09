@@ -10,13 +10,22 @@ class User extends sql
 
     public function updateUser($data)
     {
-        //var_dump($data);exit;
-        $query = 'UPDATE  boardroom.user  SET `name`=:name, `password`=:password, `surname`=:surname,'
-                . '`username`=:username ,`mail`=:mail WHERE `id`=:id;'
-                . 'UPDATE  boardroom.userPreference  '
-                . 'SET `firstDayWeek`=:firstDayWeek, `isAdmin`=:isAdmin, '
-                . '`timeFormat24`=:timeFormat24 WHERE `idUser`=:idUser';
-
+       
+        if (isset($data['password']))
+        { 
+            $query = 'UPDATE  boardroom.user  SET `name`=:name, `password`=:password, `surname`=:surname,'
+                    . '`username`=:username ,`mail`=:mail WHERE `id`=:id;'
+                    . 'UPDATE  boardroom.userPreference  '
+                    . 'SET `firstDayWeek`=:firstDayWeek, `isAdmin`=:isAdmin, '
+                    . '`timeFormat24`=:timeFormat24 WHERE `idUser`=:idUser';
+        } else
+        {
+            $query = 'UPDATE  boardroom.user  SET `name`=:name, `surname`=:surname,'
+                    . '`username`=:username ,`mail`=:mail WHERE `id`=:id;'
+                    . 'UPDATE  boardroom.userPreference  '
+                    . 'SET `firstDayWeek`=:firstDayWeek, `isAdmin`=:isAdmin, '
+                    . '`timeFormat24`=:timeFormat24 WHERE `idUser`=:idUser';
+        }
         $res = $this->executeQuery($query, $data);
         return $res;
     }
@@ -26,8 +35,7 @@ class User extends sql
         $query = 'INSERT INTO  `boardroom`.`user` ('
                 . '`name` , `surname` , `password` , `username` , `mail`)'
                 . 'VALUES (:name,  :surname, :password, :username, :mail)';
-        //var_dump($data);//exit;
-        $res = $this->executeQuery($query, $data);
+         $res = $this->executeQuery($query, $data);
         return $res;
     }
 

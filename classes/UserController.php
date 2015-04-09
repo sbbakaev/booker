@@ -22,18 +22,17 @@ class UserController extends Controller
         $logined = UserController::checkAuth('UserController', 'login');
         if ($logined)
         {
-            //var_dump($this->dataGet);
             $this->view->setMainTemplate('blank');
             if (isset($this->dataPost['name']))
             {
-                var_dump($this->dataPost);
-                $data['idUser'] = $this->dataPost['userid'];
+                $data['name'] = $this->dataPost['name'];
 
                 if (isset($this->dataPost['password']) && $this->dataPost['password'] != '')
                 {
                     $data['password'] = sha1($this->dataPost['password']);
                 }
                 $data['surname'] = $this->dataPost['surname'];
+                $data['mail'] = $this->dataPost['mail'];
                 $data['username'] = $this->dataPost['username'];
                 $data['id'] = $this->dataPost['userid'];
                 $data['idUser'] = $this->dataPost['userid'];
@@ -42,11 +41,12 @@ class UserController extends Controller
                 $data['timeFormat24'] = $this->dataPost['timeFormate'];
                 $data['idUser'] = $this->dataPost['userid'];
                 $this->model->updateUser($data);
+                $this->getUsers();
+                
             } else
             {
                 $data['userId'] = $this->dataGet['userid'];
                 $res = $this->model->getUserDetails($data);
-                var_dump($res[0]['id']);
                 $this->view->setVar('vars', $res);
                 $this->view->addTemplate('edituser')->render();
             }
