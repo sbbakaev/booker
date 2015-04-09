@@ -47,18 +47,23 @@ class EventTest extends PHPUnit_Framework_TestCase
      * @covers Event::eventList
      * @dataProvider testEventListData
      */
-    public function testEventList($data)
+    public function testEventList($data,$result)
     {
-        $this->assertEquals('foo', $data);
-        // $res = $this->object->EventList('');
-        //  var_dump($res);
+
+      //  $this->assertEquals('foo', $data);
+         $res = $this->object->EventList($data);
+         $this->assertInternalType($result,$res);
     }
 
     public function testEventListData()
     {
         $data = array(
-            array('foo'),
-            array('top')
+            array (
+                    array('date_start' => '2015-04-01 00:00:00', 'date_end' => '2015-05-01 00:00:00'),"array"
+                ) ,
+           array ( 
+               array ('date_start' => '2010-04-01 00:00:00', 'date_end' => '2010-05-01 00:00:00' ),"array"
+               ) 
         );
         return $data;
     }
@@ -67,16 +72,23 @@ class EventTest extends PHPUnit_Framework_TestCase
      * @covers Event::checkEvent
      * @dataProvider testCheckEventData
      */
-    public function testCheckEvent($data)
+    public function testCheckEvent($data,$result)
     {
-        $this->assertEquals(FALSE, $data);
+          $res = $this->object->CheckEvent($data);
+         $this->assertInternalType($result,$res);
     }
 
     public function testCheckEventData()
     {
         $data = array(
-            array(FALSE),
-            array(FALSE)
+            array (
+                    array('dateStart' => '2015-04-01 00:00:00', 
+                        'dateEnd' => '2015-05-01 00:00:00','roomId'=>1),"array"
+                ) ,
+           array ( 
+               array ('dateStart' => '2010-04-01 00:00:00', 
+                   'dateEnd' => '2010-05-01 00:00:00','roomId'=>1 ),"array"
+               ) 
         );
         return $data;
     }
