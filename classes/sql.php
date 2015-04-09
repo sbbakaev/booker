@@ -41,6 +41,7 @@ class sql
     {
         try
         {
+               //         var_dump($query,$params);
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
         } catch (PDOException $e)

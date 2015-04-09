@@ -110,7 +110,8 @@ class EventController extends Controller
         {
             $room = $this->dataGet["room"];
             $_SESSION['room'] = $room;
-        } else
+        } 
+        elseif(!isset($_SESSION['room']))
         {
             $rooms = $this->model->getRooms();
             $room = $rooms[0];
@@ -152,6 +153,7 @@ class EventController extends Controller
         $params['date_end']->add(new DateInterval('P' . $countDayMonth . 'D'));
         $params['date_start'] = $params['date_start']->format('Y-m-d H:i:s');
         $params['date_end'] = $params['date_end']->format('Y-m-d H:i:s');
+        $params['room_id'] = $_SESSION['room'];
 
         $res = $this->model->eventList($params);
 
@@ -252,9 +254,22 @@ class EventController extends Controller
             $hourEnd = $this->dataPost['hourEnd'];
             $minutEnd = $this->dataPost['minutEnd'];
             $timePrefEnd = $this->dataPost['timePrefEnd'];
-
-            $eventDateStart = new DateTime(date("Y-m-d H:i:s", mktime($hourStat, $minutStat, 0, $monthEvent, $dayEvent, $yearEvent)));
-            $eventDateEnd = new DateTime(date("Y-m-d H:i:s", mktime($hourEnd, $minutEnd, 0, $monthEvent, $dayEvent, $yearEvent)));
+            if ($timePrefStart == 'AM')
+            {
+                $eventDateStart = new DateTime(date("Y-m-d H:i:s", mktime($hourStat, $minutStat, 0, $monthEvent, $dayEvent, $yearEvent)));
+            } else
+            {
+                $eventDateStart = new DateTime(date("Y-m-d H:i:s", mktime($hourStat + 12, $minutStat, 0, $monthEvent, $dayEvent, $yearEvent)));
+            }
+            if ($timePrefEnd == 'AM')
+            {
+                $eventDateEnd = new DateTime(date("Y-m-d H:i:s", mktime($hourEnd, $minutEnd, 0, $monthEvent, $dayEvent, $yearEvent)));
+            } else
+            {
+                $eventDateEnd = new DateTime(date("Y-m-d H:i:s", mktime($hourEnd + 12, $minutEnd, 0, $monthEvent, $dayEvent, $yearEvent)));
+            }
+            //$eventDateStart = new DateTime(date("Y-m-d H:i:s", mktime($hourStat, $minutStat, 0, $monthEvent, $dayEvent, $yearEvent)));
+            //$eventDateEnd = new DateTime(date("Y-m-d H:i:s", mktime($hourEnd, $minutEnd, 0, $monthEvent, $dayEvent, $yearEvent)));
             $recurringEvent = $this->dataPost['recurringEvent'];
             $recurringSpecify = $this->dataPost['recurringSpecify'];
             $durationEvents = $this->dataPost['durationEvents'];
@@ -292,8 +307,9 @@ class EventController extends Controller
                     } else
                     {
                         $this->model->createEvent($value);
-                    };
+                    }
                 }
+
                 $host = $_SERVER['HTTP_HOST'];
                 header("Location: http://$host");
                 exit;
