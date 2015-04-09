@@ -31,15 +31,15 @@
             <div id="main">
                 <div id="month" class="month">
                     <a href="/?month=<?php echo $vars['prevMonth']; ?>&year=<?php echo $vars['prevYear']; ?>">
-                        <div id="previousMonth" style="border: medium solid; float: left;"><</div>
+                        <div id="previousMonth" class="left"><img src="/img/left50.png"/></div>
                     </a>
-                    <div id="monthCurrent" style="border: medium solid; float: left;">
+                    <div id="monthCurrent" class="left">
                         <?php
                         echo $vars['currentMonth'] . ' ' . $vars['year'];
                         ?>
                     </div>
                     <a href="/?month=<?php echo $vars['nextMonth']; ?>&year=<?php echo $vars['nextYear']; ?>">
-                        <div id="nextMonth" style="border: medium solid; float: left;">></div>
+                        <div id="nextMonth" class="left"><img src="/img/right50.png"/></div>
                     </a>
                 </div>
                 <div id="calendarMain" class="" style="clear: both;"></div>
