@@ -27,7 +27,7 @@ class Event extends sql
                     . ' WHERE ev.id=:id';
         } else
         {
-            $query = 'SELECT * FROM event WHERE room_id =:room_id AND date_start>=:date_start AND date_end<:date_end';
+            $query = 'SELECT * FROM event WHERE date_start>=:date_start AND date_end<:date_end';
         }
 
         $res = $this->getAll($query, $params);
