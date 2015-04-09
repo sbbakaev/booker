@@ -1,8 +1,12 @@
+
 .cell {
-    height:100px;
+    background-color: #efefef;
+    height: 100px;
     width: 100px;
 }
-
+.empty {
+    
+}
 .clear{
     clear: both;
 }
@@ -37,7 +41,6 @@
 .month {
     height:40px;
     width: 20%;
-    border: solid 1px;
 }
 #monthCurrent {
     height: 100%;
@@ -46,6 +49,11 @@
 #backMonth,#nextMonth{
     height: 100%;
     width: 10%;
+}
+
+
+.left {
+    float: left;
 }
 
 
