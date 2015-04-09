@@ -1,7 +1,7 @@
 
 <html>
     <head>
-        <title><?php $title; ?></title>
+        <title><?php echo isset($vars['title'])?$vars['title']:'Boardroom Booker'; ?></title>
         <link rel="stylesheet" href="/css/style.css" media="screen" />
         <script type='text/javascript' src='/js/jquery-2.1.3.min.js'></script>
         <script type='text/javascript' src='/js/booker.js'></script>
