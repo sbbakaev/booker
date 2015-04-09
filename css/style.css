@@ -17,13 +17,14 @@
 }
 
 .details {
-    display: none;
-    background-color: red;
-    border: 1px solid;
+   background-color: #b2b2b2;
+    border: 1px solid white;
     border-radius: 10px;
-    height: 250px;
+    display: none;
+    height: 200px;
     left: 250px;
     margin: 10px;
+    padding: 20px;
     position: absolute;
     top: 250px;
     width: 300px;
@@ -57,6 +58,9 @@
     float: left;
 }
 
+input {
+    margin: 5px;
+}
 
 .boardroom {
     background-color: gray;
