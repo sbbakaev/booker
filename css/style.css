@@ -1,8 +1,12 @@
+
 .cell {
-    height:100px;
+    background-color: #efefef;
+    height: 100px;
     width: 100px;
 }
-
+.empty {
+    
+}
 .clear{
     clear: both;
 }
@@ -25,22 +29,18 @@
     width: 300px;
 }
 
-.button {
-    background-color: pink;
-    border: 1px solid;
-    border-radius: 5px;
-    height: 50px;
-    margin: 10px;
-    width: 100px;
-}
+
 
 .month {
     height:40px;
     width: 20%;
-    border: solid 1px;
 }
 #monthCurrent {
+    font-size: 26px;
     height: 100%;
+    line-height: 50px;
+    opacity: 0.6;
+    text-align: center;
     width: 50%;
 }
 #backMonth,#nextMonth{
@@ -48,4 +48,51 @@
     width: 10%;
 }
 
+.caltable {
+    
+}
+
+
+.left {
+    float: left;
+}
+
+
+.boardroom {
+    background-color: gray;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 10px;
+    width: 200px;
+}
+.boardroom:hover {
+    background-color: black;
+
+}
+
+.roomlink {
+        color: white;
+    text-decoration: none;
+}
+
+.butt {
+            color: white;
+    text-decoration: none;
+}
+
+.button {
+    background-color: grey;
+    border-radius: 5px;
+    height: 50px;
+    margin: 10px;
+    width: 100px;
+    text-align: center;
+    line-height: 50px;
+    text-transform: uppercase;
+}
+
+.button:hover {
+    background-color: black;
+
+}
 

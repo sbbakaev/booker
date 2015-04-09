@@ -1,7 +1,7 @@
 
 <div id="calendar" class="Calendar" style="float: left;">
     <div id="helper"> </div>
-    <table border="1">
+    <table class="caltable" border="1" cellspacing="0">
         <tbody>
 
             <?php
@@ -44,7 +44,7 @@
                 echo '<tr>';
                 for ($i = 0; $i < $firstDayMonth; $i++)
                 {
-                    echo '<td class="cell"></td>';
+                    echo '<td class=""></td>';
                     $countDay++;
                     if ($countDay == 7)
                     {

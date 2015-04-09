@@ -15,12 +15,12 @@
             <a href="/User/logout/?logout=true">
                 <div align="right">logout</div>
             </a>
-            <div id="boardrooms" style="text-align:center; width: 100%;">
+            <div id="boardrooms"  style="text-align:center; width: 100%;">
 
                 <?php
                 foreach ($vars['boardrooms'] as $key => $value)
                 {
-                    echo '<a href=?room=' . $value['id'] . ' class="booker"><div style="width: 200px;float: left">' . $value['name'] . '</div></a>';
+                    echo '<a href=?room=' . $value['id'] . ' class="roomlink"><div class="boardroom left" >' . $value['name'] . '</div></a>';
                 }
                 ?>
             </div>
@@ -31,15 +31,15 @@
             <div id="main">
                 <div id="month" class="month">
                     <a href="/?month=<?php echo $vars['prevMonth']; ?>&year=<?php echo $vars['prevYear']; ?>">
-                        <div id="previousMonth" style="border: medium solid; float: left;"><</div>
+                        <div id="previousMonth" class="left"><img src="/img/left50.png"/></div>
                     </a>
-                    <div id="monthCurrent" style="border: medium solid; float: left;">
+                    <div id="monthCurrent" class="left">
                         <?php
                         echo $vars['currentMonth'] . ' ' . $vars['year'];
                         ?>
                     </div>
                     <a href="/?month=<?php echo $vars['nextMonth']; ?>&year=<?php echo $vars['nextYear']; ?>">
-                        <div id="nextMonth" style="border: medium solid; float: left;">></div>
+                        <div id="nextMonth" class="left"><img src="/img/right50.png"/></div>
                     </a>
                 </div>
                 <div id="calendarMain" class="" style="clear: both;"></div>
@@ -50,10 +50,10 @@
                 }
                 ?>            
                 <div id="helper" style="float: left;">
-                    <a href="/Event/addEvent">
+                    <a href="/Event/addEvent" class="butt">
                         <div id="employeeList" class="button">book it</div>
                     </a>
-                    <a href="<?php echo '/user/getUsers'; ?>">                        
+                    <a class="butt" href="<?php echo '/user/getUsers'; ?>">                        
                         <div id="employeeList" class="button">Employee list</div>
                     </a>
                 </div>
