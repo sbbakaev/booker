@@ -243,7 +243,6 @@ class EventController extends Controller
 
     public function addEvent()
     {
-        // $errors = User::getFlash('errors');
         if ($this->validate())
         {
 

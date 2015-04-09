@@ -73,7 +73,7 @@
                 {
             
                     foreach ($events[$i] as $value)
-                    {
+        {
                         echo '<a href=/Event/showEventDetails?id='.$value['id'].' class="current">'.$value['date_start'] . '-';
                         echo $value['date_end'].'</a>';
                         echo '</br>';

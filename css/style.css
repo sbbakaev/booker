@@ -7,6 +7,11 @@
     clear: both;
 }
 
+.employee{
+    float: left;
+    height:500px;
+}
+
 .details {
     display: none;
     background-color: red;
