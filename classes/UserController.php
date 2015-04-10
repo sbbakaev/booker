@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Конструктор для работы с сотрудниками.
+ * @author Сергей Бакаев <sbbakaev@mail.ru>
+ */
 class UserController extends Controller
 {
 
@@ -10,13 +14,10 @@ class UserController extends Controller
         parent::__construct($get, $post);
     }
 
-    public function userList()
-    {
-        $data = array();
-        $res = $this->model->userList($data);
-        $this->view->addTemplate('asd')->render();
-    }
-
+    /**
+     * Делает подготовку  данных для редактирования сотрудника и делает 
+     * проверку, что сользователь залогинился.
+     */
     public function editUser()
     {
         $logined = UserController::checkAuth('UserController', 'login');
@@ -42,7 +43,6 @@ class UserController extends Controller
                 $data['idUser'] = $this->dataPost['userid'];
                 $this->model->updateUser($data);
                 $this->getUsers();
-                
             } else
             {
                 $data['userId'] = $this->dataGet['userid'];
@@ -53,10 +53,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Создает нового пользователся и его настроек.
+     */
     public function addUser()
     {
         $this->view->setMainTemplate('blank');
-        //var_dump($this->dataPost);
         if (isset($this->dataPost['name']) && $this->dataPost['name'] != '')
         {
             $dataUser['mail'] = $this->dataPost['mail'];
@@ -64,26 +66,26 @@ class UserController extends Controller
             $dataUser['surname'] = $this->dataPost['surname'];
             $dataUser['password'] = sha1($this->dataPost['password']);
             $dataUser['username'] = $this->dataPost['username'];
-
-
+            //создание нового сотрудника
             $inserId = $this->model->createUser($dataUser);
             $dataPreference['idUser'] = $inserId;
             $dataPreference['timeFormat24'] = $this->dataPost['timeFormate'];
             $dataPreference['firstDayWeek'] = $this->dataPost['firstdayweek'];
             $dataPreference['isAdmin'] = $this->dataPost['userRights'];
-            // var_dump($dataPreference);
+            //создание записи настроек по сотруднику.
             $this->model->addPreference($dataPreference);
             $host = $_SERVER['HTTP_HOST'];
             header("Location: http://$host/user/getUsers");
+            exit;
         } else
         {
             $this->view->addTemplate('newuser')->render();
         }
-        /*  $host = $_SERVER['HTTP_HOST'];
-          header("Location: http://$host/user/getUsers"); */
-        exit;
     }
 
+    /**
+     * Уничтожает сессию, сотрудника.
+     */
     public function logout()
     {
         if (isset($this->dataGet['logout']))
@@ -95,6 +97,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Аутетификация сотрудника, получение прав.
+     */
     public function login()
     {
         if (isset($this->dataPost['user']) && isset($this->dataPost['password']))
@@ -119,6 +124,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Проверка авторизации сотрудника. Запись данных в сессию.
+     * @param type $class 
+     * @param type $method
+     * @return boolean TRUE если сотрудник авторизирован.
+     */
     public static function checkAuth($class, $method)
     {
         if (!session_id())
@@ -142,18 +153,23 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Получает список пользователей. Проходит проверку на права.
+     */
     public function getUsers()
     {
         $logined = UserController::checkAuth('UserController', 'login');
         if ($logined)
         {
             $res = $this->model->userList(array());
-            //  var_dump($res);
             $this->view->setVar('usersData', $res);
             $this->view->addTemplate('users')->render();
         }
     }
 
+    /**
+     * Удаляет сотрудника из системы.
+     */
     public function deleteUser()
     {
         $logined = UserController::checkAuth('UserController', 'login');

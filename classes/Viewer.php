@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Класс для работы с отображением.
+ */
 class Viewer
 {
 
@@ -20,6 +23,11 @@ class Viewer
         }
     }
 
+    /**
+     * Добавляет и проверяет наличие файла темплейта.
+     * @param string $template имя файла темплейта.
+     * @return \Viewer
+     */
     public function addTemplate($template)
     {
         $file = './templates/' . $template . '.template.php';
@@ -34,6 +42,10 @@ class Viewer
         return $this;
     }
 
+    /**
+     * Устанавливает главный темплейт, который будет отображаться в любом случае.
+     * @param string $template имя файла темплейта.
+     */
     public function setMainTemplate($template)
     {
         $file = './templates/' . $template . '.template.php';
@@ -46,11 +58,19 @@ class Viewer
         }
     }
 
+    /**
+     * Передает данные в отображение.
+     * @param string $key
+     * @param type $val
+     */
     public function setVar($key, $val)
     {
         $this->vars[$key] = $val;
     }
-    
+
+    /**
+     * Переопределяет  данные и инклюдитфайл с главным темплейтом.
+     */
     public function render()
     {
         $templates = $this->templates;

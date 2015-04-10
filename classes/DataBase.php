@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Класс для работы с базой данных
+ */
 class DataBase
 {
 
@@ -11,6 +14,10 @@ class DataBase
         
     }
 
+    /**
+     * реализация сингл тон.
+     * @return объект.
+     */
     public static function getInstanse()
     {
         if (!isset(self::$instanse))
@@ -20,6 +27,10 @@ class DataBase
         return self::$instanse;
     }
 
+    /**
+     * Создание PDO объекта для работы с базойданных.
+     * @return PDO объект если все хорошо.
+     */
     public function connect()
     {
         if (!isset($this->dbLink))

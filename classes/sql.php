@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Клсс для работы c mySQL.
+ * @author Сергей Бакаев <sbbakaev@mail.ru>
+ */
 class sql
 {
 
@@ -10,6 +14,12 @@ class sql
         $this->pdo = DataBase::getInstanse()->connect();
     }
 
+    /**
+     * Выполняет заранее подготовленный запрос и возвращает последний вставленный id
+     * @param string $query - mySQL запрос
+     * @param array $parameters - любой аррайв зависимостиотзапроса
+     * @return int возвращает последний вставленный id если все хорошо
+     */
     public function executeQuery($query, $parameters)
     {
         try
@@ -24,6 +34,12 @@ class sql
         return $result;
     }
 
+    /**
+     * Выполняет заранее подготовленный запрос на удление.
+     * @param string $query - mySQL запрос
+     * @param array $parameters - любой аррайв зависимостиотзапроса
+     * @return boolean возвращает true если все хорошо.
+     */
     public function executeDeleteQuery($query, $parameters)
     {
         try
@@ -37,11 +53,16 @@ class sql
         return $result;
     }
 
+    /**
+     * Выполняет заранее подготовленный запрос на select.
+     * @param string $query - mySQL запрос
+     * @param array $parameters - любой аррайв зависимостиотзапроса
+     * @return boolean возвращает true если все хорошо.
+     */
     public function getAll($query, $params)
     {
         try
         {
-               //         var_dump($query,$params);
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
         } catch (PDOException $e)

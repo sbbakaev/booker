@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Контролер для работы с событиями.
+ * @author Сергей Бакаев <sbbakaev@mail.ru>
+ */
 class EventController extends Controller
 {
 
@@ -10,6 +14,10 @@ class EventController extends Controller
         parent::__construct($get, $post);
     }
 
+    /**
+     * Формирует json объект с детальными данными о событии.
+     * @return object json.
+     */
     public function showEventDetails()
     {
         if (isset($this->dataGet["id"]))
@@ -33,7 +41,7 @@ class EventController extends Controller
 
     /**
      * Метод удаляет событие. Если есть отметка об удалении всех связаных событий,
-     *  то удаляет их все.
+     * то удаляет их все.
      * @return json object
      */
     public function deleteEvent()
@@ -57,6 +65,10 @@ class EventController extends Controller
         exit;
     }
 
+    /**
+     * Обновляет событие и формирует json object с ответом. 
+     * @return json object событий с детальными данными о них.
+     */
     public function updateEvent()
     {
 
@@ -81,7 +93,6 @@ class EventController extends Controller
         //Проверяю свободное время
         foreach ($dataCheck as $value)
         {
-
             $eventInBD = $this->model->checkEvent($value);
             if (!empty($eventInBD))
             {
@@ -102,23 +113,22 @@ class EventController extends Controller
         }
     }
 
+    /**
+     * Формирует список событий и выполняет запуск отображение календаря. 
+     */
     public function showCalendar()
     {
-        //var_dump($_SESSION['userData']);
-
         if (isset($this->dataGet["room"]))
         {
             $room = $this->dataGet["room"];
             $_SESSION['room'] = $room;
-        } 
-        elseif(!isset($_SESSION['room']))
+        } elseif (!isset($_SESSION['room']))
         {
             $rooms = $this->model->getRooms();
             $room = $rooms[0];
             $_SESSION['room'] = $room;
             $_SESSION['rooms'] = $rooms;
         }
-
         if (isset($this->dataGet["month"]))
         {
             $month = (int) $this->dataGet["month"];
@@ -129,7 +139,6 @@ class EventController extends Controller
         if (isset($this->dataGet["year"]))
         {
             $year = $this->dataGet["year"];
-            //var_dump($year);exit;
         } else
         {
             $year = date("Y");
@@ -156,15 +165,12 @@ class EventController extends Controller
         $params['room_id'] = $_SESSION['room'];
 
         $res = $this->model->eventList($params);
-
         $dataArray = array();
-
         foreach ($res as $value)
         {
             $temp[] = array();
             $tmpStart = new DateTime($value['date_start']);
             $tmpEnd = new DateTime($value['date_end']);
-            // $value['date_start'];
             $temp['id'] = $value['id'];
             $temp['date_start'] = $tmpStart->format('H:i');
             $temp['date_end'] = $tmpEnd->format('H:i');
@@ -185,6 +191,10 @@ class EventController extends Controller
         $this->view->addTemplate('calendar')->render();
     }
 
+    /**
+     * Проверяет, что все необходимые данные есть.
+     * @return boolean true если все необходиммые данные есть.
+     */
     public function validate()
     {
         $res = TRUE;
@@ -240,11 +250,14 @@ class EventController extends Controller
         return $res;
     }
 
+    /**
+     * Создает новое событие, а так же выполняет все необходимые проверки. 
+     * Например: Свободна комната или нет.
+     * */
     public function addEvent()
     {
         if ($this->validate())
         {
-
             $monthEvent = $this->dataPost['month'];
             $dayEvent = $this->dataPost['days'];
             $yearEvent = $this->dataPost['year'];
@@ -268,8 +281,6 @@ class EventController extends Controller
             {
                 $eventDateEnd = new DateTime(date("Y-m-d H:i:s", mktime($hourEnd + 12, $minutEnd, 0, $monthEvent, $dayEvent, $yearEvent)));
             }
-            //$eventDateStart = new DateTime(date("Y-m-d H:i:s", mktime($hourStat, $minutStat, 0, $monthEvent, $dayEvent, $yearEvent)));
-            //$eventDateEnd = new DateTime(date("Y-m-d H:i:s", mktime($hourEnd, $minutEnd, 0, $monthEvent, $dayEvent, $yearEvent)));
             $recurringEvent = $this->dataPost['recurringEvent'];
             $recurringSpecify = $this->dataPost['recurringSpecify'];
             $durationEvents = $this->dataPost['durationEvents'];
@@ -281,7 +292,6 @@ class EventController extends Controller
                 unset($dataCheck[$key]['userId']);
                 unset($dataCheck[$key]['description']);
             }
-
             $canCreateEvent = TRUE;
             foreach ($dataCheck as $value)
             {
@@ -300,16 +310,13 @@ class EventController extends Controller
                     if ($insertId == NULL)
                     {
                         $insertId = $this->model->createEvent($value);
-
                         $temp['id'] = $insertId;
-                        //var_dump($temp,$value);
                         $this->model->updateRecurrentEvent($temp);
                     } else
                     {
                         $this->model->createEvent($value);
                     }
                 }
-
                 $host = $_SERVER['HTTP_HOST'];
                 header("Location: http://$host");
                 exit;
@@ -319,12 +326,10 @@ class EventController extends Controller
                 {
                     $error = "Room is booked from " . $value['date_start'] . " to " . $value['date_end'];
                     User::setFlash($error, 'errors');
-
                     $this->view->setMainTemplate('blank');
                     $user = new User;
                     $res = $user->userList(NULL);
                     $this->view->setVar('users', $res);
-
                     $this->view->addTemplate('newevent')->render();
                 }
             }
@@ -338,9 +343,18 @@ class EventController extends Controller
         }
     }
 
+    /**
+     * Формирует array повторений событий для дальнейшего создания или проверки 
+     * занятости комнаты.
+     * $params date $dateStart дата-время начала события, 
+     * $params date $dateEnd дата-время конца события
+     * $params int $recurringSpecify переодичность повторений 7,14,28 дней 
+     * $params int $recurringEvent будет повторятся совещание или нет 
+     * $params int $repeatCount  количество повторений события.
+     * @return array событий.
+     */
     private function getRecurringArray($dateStart, $dateEnd, $recurringSpecify, $recurringEvent, $repeatCount)
     {
-
         $data[0]['dateStart'] = $dateStart->format('Y-m-d H:i:s');
         $data[0]['dateEnd'] = $dateEnd->format('Y-m-d H:i:s');
         $data[0]['userId'] = $this->dataPost['username'];

@@ -5,3 +5,4 @@ define("DATABASE_NAME", "boardroom");
 define("DATABASE_USER", "root");
 define("DATABASE_PASSWORD", "");
 
+  
