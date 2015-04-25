@@ -58,6 +58,21 @@ class Viewer
         }
     }
 
+    private static function arraySetVar($val)
+    {
+        if (is_array($val))
+        {
+            foreach ($val as $value)
+            {
+                Viewer::arraySetVar($value);
+            }
+        } else
+        {
+            $val = htmlspecialchars($val);
+        }
+        return $val;
+    }
+
     /**
      * Передает данные в отображение.
      * @param string $key
@@ -65,6 +80,7 @@ class Viewer
      */
     public function setVar($key, $val)
     {
+        $val = Viewer::arraySetVar($val);
         $this->vars[$key] = $val;
     }
 
