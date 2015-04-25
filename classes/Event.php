@@ -19,7 +19,6 @@ class Event extends sql
      */
     public function eventList($params)
     {
-
         if (isset($params['id']))
         {
             $query = 'SELECT ev.*, u.surname as surname, u.name as name FROM event ev '
