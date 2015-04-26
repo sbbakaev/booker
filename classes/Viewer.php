@@ -57,20 +57,23 @@ class Viewer
             exit('server fail');
         }
     }
-
-    private static function arraySetVar($val)
+/**
+ * 
+ * @param type $val
+ * @return type
+ */
+    private function setEntities(&$val)
     {
         if (is_array($val))
         {
-            foreach ($val as $value)
+            foreach ($val as &$value)
             {
-                Viewer::arraySetVar($value);
+                $this->setEntities($value);
             }
         } else
         {
-            $val = htmlspecialchars($val);
+            $val =  htmlentities($val,ENT_QUOTES);
         }
-        return $val;
     }
 
     /**
@@ -80,7 +83,7 @@ class Viewer
      */
     public function setVar($key, $val)
     {
-        $val = Viewer::arraySetVar($val);
+        $this->setEntities($val);
         $this->vars[$key] = $val;
     }
 
