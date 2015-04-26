@@ -2,7 +2,7 @@
 $(document).ready(function () {
 
     $('#bookIt').on('click', function () {
-        alert(a = 1);
+       // alert(a = 1);
     });
 
     /*  $('#month').on('click', function () {
@@ -188,8 +188,12 @@ $(document).ready(function () {
     $('#newevent').submit(function () {
         if($('[name="recurringEvent"]:checked').val()=="yes"){
             if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
-                alert('Duration value of events must be from 1 to 4');
+                $("#durationError").text('Duration value of events must be from 1 to 4').show();
                 return false;
+            }
+            else
+            {
+                $("#durationError").hide();
             }
         }
     });
