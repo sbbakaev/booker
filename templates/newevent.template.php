@@ -81,14 +81,14 @@
     <textarea name=meetingSpecText rows=5 wrap=Virtual id = "meetingSpecText">
     </textarea><br />
     5. Is this going to be a recurring event?<br/>
-    <input type=radio name=recurringEvent value=yes checked >Yes
-    <input type=radio name=recurringEvent value=no >No<br/>
+    <input type=radio name=recurringEvent value=yes>Yes
+    <input type=radio name=recurringEvent value=no checked>No<br/>
     6. If it is recurring , specify weekly, bi-weekly, or month. <br/>
     <input type=radio name=recurringSpecify value=weekly checked>weekly
     <input type=radio name=recurringSpecify value=biWeekly checked>bi-weekly
     <input type=radio name=recurringSpecify value=month >month <br/>
     7. Duration
-    <input type=text name=durationEvents id ="durationEvents" maxlen=1><br/>
+    <input type=text name=durationEvents id ="durationEvents" maxlen=1><span style="display: none;" id="durationError" class="error">Error</span><br/>
 
 
     <br />
