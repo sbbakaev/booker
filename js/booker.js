@@ -1,14 +1,6 @@
 
 $(document).ready(function () {
 
-    $('#bookIt').on('click', function () {
-        alert(a = 1);
-    });
-
-    /*  $('#month').on('click', function () {
-     $('#meetingSpecText').append('text');
-     });*/
-
     $('html').on('click', function () {
         $('#eventdetails').hide();
 
@@ -20,12 +12,11 @@ $(document).ready(function () {
 
     $('#hourStat').val(function () {
         var hourStart = new Date().getHours();
-        $('#minutStat').val(new Date().getMinutes());
+        $('#minutStat').val(0);
         if (hourStart > 12)
         {
             $('#timePrefStart').val("PM")
             hourStart = hourStart - 12;
-            // alert(hourStart);
             return hourStart;
         }
         else {
@@ -37,12 +28,12 @@ $(document).ready(function () {
 
     $('#hourEnd').val(function () {
         var hourEnd = new Date().getHours();
-        $('#minutEnd').val(new Date().getMinutes());
+        
+        $('#minutEnd').val(59);
         if (hourEnd > 12)
         {
             $('#timePrefEnd').val("PM")
             hourEnd = hourEnd - 12;
-            // alert(hourStart);
             return hourEnd;
         }
         else {
@@ -52,13 +43,12 @@ $(document).ready(function () {
 
     });
 
-    $('#hourStat').val(function () {
+    /*$('#hourStat').val(function () {
         var hourStart = new Date().getHours();
         if (hourStart > 12)
         {
             $('#timePrefStart').val("PM")
             hourStart = hourStart - 12;
-            // alert(hourStart);
             return hourStart;
         }
         else {
@@ -66,7 +56,7 @@ $(document).ready(function () {
             return hourStart;
         }
 
-    });
+    });*/
 
 
 
@@ -123,16 +113,14 @@ $(document).ready(function () {
 
         var url = $(this).attr('href');
         $.ajax({
-            type: "GET", //тут тип запрос (GET,POST,PUT,DELETE)
-            url: url, //тут урл запроса
+            type: "GET",
+            url: url,
             dataType: 'json',
             error: function (res)
             {
-                //ТУТ ЧТОТ ДЕЛАЕМ ЕСЛИ СЕРВЕР ВЕРНУЛ ОШИБКУ
             },
             success: function (res) {
-                //         console.log(res[0]);
-//console.log(res[0].date_start);
+
                 $('#dateStart').val(res.date_start);
                 $('#dateEnd').val(res.date_end);
                 $('#description').val(res.description);
@@ -145,10 +133,8 @@ $(document).ready(function () {
             }
         });
 
-        console.log(url);
-        //alert('aee');
+        //console.log(url);
 
-        // $('#meetingSpecText').append('text');
     });
 
     $('#update').on('click', function (event) {
@@ -161,36 +147,75 @@ $(document).ready(function () {
         postData.description = $('#description').val();
         postData.dateEnd = $('#dateEnd').val();
         postData.id = $('#eventId').text();
-        //$.param(postData);
-        // alert($('#eventId').text());
-        console.log($('#eventId').val());
+       // console.log($('#eventId').val());
         $.ajax({
-            type: "POST", //тут тип запрос (GET,POST,PUT,DELETE)
-            url: url, //тут урл запроса
+            type: "POST",
+            url: url,
             data: $.param(postData),
             processData: true,
             dataType: 'json',
             error: function (res)
             {
-                //ТУТ ЧТОТ ДЕЛАЕМ ЕСЛИ СЕРВЕР ВЕРНУЛ ОШИБКУ
+
             },
             success: function (res) {
-                console.log(res);
+               // console.log(res);
                 if (res.success)
                 {
                     $('#eventdetails').hide();
                 }
             }
         });
-        console.log(url);
+       // console.log(url);
     });
 
     $('#newevent').submit(function () {
-        if($('[name="recurringEvent"]:checked').val()=="yes"){
+        var hourStart = $('#hourStat').val();
+        var minutStart = $('#minutStat').val();
+        var hourEnd = $('#hourEnd').val();
+        var minutEnd = $('#minutEnd').val();
+        if ($('#timePrefStart').val() == "PM") {
+            hourStart = hourStart + 12;
+        }
+        if ($('#timePrefEnd').val() == "PM") {
+            hourEnd = hourEnd + 12;
+        }
+        var hourStartTime = new Date(0, 0, 0, hourStart, minutStart);
+        var hourEndTime = new Date(0, 0, 0, hourEnd, minutEnd);
+
+        if (hourStartTime.getTime() > hourEndTime.getTime()) {
+            $("#durationError").text('Time start must be lower time end').show();
+            return false;
+        }
+        else
+        {
+            $("#durationError").hide();
+        }
+
+        /*   if ($('[name="recurringEvent"]:checked').val() == "yes") {
+         if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
+         alert('Duration value of events must be from 1 to 4');
+         return false;
+         }
+         }*/
+        if ($('[name="recurringEvent"]:checked').val() == "yes") {
             if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
-                alert('Duration value of events must be from 1 to 4');
+                $("#durationError").text('Duration value of events must be from 1 to 4').show();
                 return false;
             }
+            else
+            {
+                $("#durationError").hide();
+            }
+        }
+
+        if ($('username') == "") {
+            $("#durationError").text('You need entry username').show();
+            return false;
+        }
+        else
+        {
+            $("#durationError").hide();
         }
     });
 
@@ -198,28 +223,22 @@ $(document).ready(function () {
         event.preventDefault();
         var postData = {};
         url = $(this).attr('href');
-        /*    postData.eventDate = $('#eventDate').text();
-         postData.dateStart = $('#dateStart').val();
-         postData.dateEnd = $('#dateEnd').val();*/
         postData.recurrentId = $('#recurrentId').text();
         postData.deleteAllEvent = $('input[name="deleteAllEvent"]').prop('checked');
-        //alert($('input[name="deleteAllEvent"]').prop('checked'));
         postData.id = $('#eventId').text();
-        //$.param(postData);
-        // alert($('#eventId').text());
         console.log($('#eventId').val());
         $.ajax({
-            type: "POST", //тут тип запрос (GET,POST,PUT,DELETE)
-            url: url, //тут урл запроса
+            type: "POST",
+            url: url,
             data: $.param(postData),
             processData: true,
             dataType: 'json',
             error: function (res)
             {
-                //ТУТ ЧТОТ ДЕЛАЕМ ЕСЛИ СЕРВЕР ВЕРНУЛ ОШИБКУ
+
             },
             success: function (res) {
-                console.log(res);
+               // console.log(res);
                 if (res.success)
                 {
                     $('#eventdetails').hide();
@@ -227,10 +246,44 @@ $(document).ready(function () {
             }
         });
 
-        console.log(url);
-        //alert('aee');
-
-        // $('#meetingSpecText').append('text');
+        //console.log(url);
+    });
+    $('#newuser').submit(function () {
+        var createUser = true;
+        var message = "";
+        if ($('#name').val() == "")
+        {
+            createUser = false;
+            message = message + "Enter a name. ";
+        }
+        else if ($('#surname').val() == "")
+        {
+            createUser = false;
+            message = message + "Enter a surname.";
+        }
+        else if ($('#username').val() == "")
+        {
+            createUser = false;
+            message = message + "Enter a username. ";
+        }
+        else if ($('#mail').val() == "")
+        {
+            createUser = false;
+            message = message + "Enter a mail. ";
+        }
+        else if ($('#password').val() == "")
+        {
+            createUser = false;
+            message = message + "Enter a password.";
+        }
+        if (!createUser) {
+            $("#durationError").text(message).show();
+            return false;
+        }
+        else
+        {
+            $("#durationError").hide();
+        }
     });
 });
 

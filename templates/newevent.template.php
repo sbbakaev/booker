@@ -4,7 +4,6 @@
         <?php
         foreach ($vars['users'] as $key => $value)
         {
-            //var_dump($vars['users']);
             echo '<option value = ' . $value['id'] . ' > ' . $value['name'] . ' ' . $value['surname'] . ' </option>';
         }
         ?> 
@@ -38,7 +37,7 @@
     3. Specify what the time and end of the meeting.<br />
     <select name=hourStat size=1 id = "hourStat">
         <?php
-        for ($i = 1; $i <= 12; $i++)
+        for ($i = 0; $i <= 12; $i++)
         {
             echo "<option value=$i>$i</option>";
         }
@@ -59,7 +58,7 @@
 
     <select name=hourEnd size=1 id="hourEnd">
         <?php
-        for ($i = 1; $i <= 12; $i++)
+        for ($i = 0; $i <= 12; $i++)
         {
             echo "<option value=$i>$i</option>";
         }
@@ -81,8 +80,8 @@
     <textarea name=meetingSpecText rows=5 wrap=Virtual id = "meetingSpecText">
     </textarea><br />
     5. Is this going to be a recurring event?<br/>
-    <input type=radio name=recurringEvent value=yes checked >Yes
-    <input type=radio name=recurringEvent value=no >No<br/>
+    <input type=radio name=recurringEvent value=yes  >Yes
+    <input type=radio name=recurringEvent value=no checked>No<br/>
     6. If it is recurring , specify weekly, bi-weekly, or month. <br/>
     <input type=radio name=recurringSpecify value=weekly checked>weekly
     <input type=radio name=recurringSpecify value=biWeekly checked>bi-weekly

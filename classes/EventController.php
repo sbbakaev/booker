@@ -122,12 +122,12 @@ class EventController extends Controller
         if (isset($this->dataGet["room"]))
         {
             $room = $this->dataGet["room"];
-            $_SESSION['room'] = $room;
+            $_SESSION['room'] = $room['id'];
         } elseif (!isset($_SESSION['room']))
         {
             $rooms = $this->model->getRooms();
             $room = $rooms[0];
-            $_SESSION['room'] = $room;
+            $_SESSION['room'] = $room['id'];
             $_SESSION['rooms'] = $rooms;
         }
         if (isset($this->dataGet["month"]))
@@ -154,7 +154,7 @@ class EventController extends Controller
         //количество дней в месяце
         $countDayMonth = date("t", mktime(0, 0, 0, $month, 1, $year));
         $firstDayMonth = date("w", mktime(0, 0, 0, $month, 1, $year));
-        $firstDayWeek = 1;
+        $firstDayWeek = $_SESSION['userData'][0]['firstDayWeek'];
         $caledarData = array("countDayMonth" => $countDayMonth,
             "firstDayWeek" => $firstDayWeek, "firstDayMonth" => $firstDayMonth,);
         //подготоваливаю данные для вывода событий в календарь.
@@ -179,6 +179,7 @@ class EventController extends Controller
         }
         $eventDetails = $this->showEventDetails();
 
+        $this->view->setVar('currentRoom', $_SESSION['room']);
         $this->view->setVar('boardrooms', $_SESSION['rooms']);
         $this->view->setVar('currentMonth', date("F", $currentDate));
         $this->view->setVar('prevMonth', $prevMonth);
@@ -328,11 +329,11 @@ class EventController extends Controller
                     $error = "Room is booked from " . $value['date_start'] . " to " . $value['date_end'];
                     User::setFlash($error, 'errors');
                     $this->view->setMainTemplate('blank');
-                    $user = new User;
-                    $res = $user->userList(NULL);
-                    $this->view->setVar('users', $res);
-                    $this->view->addTemplate('newevent')->render();
+                   //$user = new User;
+                    //$res = $user->userList(NULL);
+                   // $this->view->setVar('users', $res);
                 }
+                    $this->view->addTemplate('newevent')->render();
             }
         } else
         {

@@ -10,11 +10,9 @@
     </head>
 
     <body><?php
-        // var_dump($flash);
         if (!empty($flash))
         {
-            // var_dump($flash);
-            echo '<div>';
+            echo '<div class = "flashError">';
             foreach ($flash as $value)
             {
                 echo "$value";

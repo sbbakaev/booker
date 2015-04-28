@@ -81,6 +81,19 @@ class User extends sql
         $res = $this->getAll($query, $params);
         return $res;
     }
+    
+    /**
+     * Получает все хользователей по полю username
+     * @param array $params содержит username.
+     * @return array пользователей с переданым username.
+     */
+    public function getUserUsername($params)
+    {
+       // var_dump($params);
+        $query = 'SELECT COUNT(id) as count FROM `user` WHERE `username`=:username';
+        $res = $this->getAll($query, $params);
+        return $res;    
+    }
 
     /**
      * Удаляет сотрудника и его настройки.

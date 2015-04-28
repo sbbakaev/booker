@@ -94,7 +94,9 @@ class Viewer
     {
         $templates = $this->templates;
         $vars = $this->vars;
+
         $flash = User::getFlash('errors');
+        //var_dump($flash);
         include $this->mainTemplate;
     }
 

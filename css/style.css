@@ -1,11 +1,13 @@
-
+.flashError{
+    color: red;
+}
 .cell {
     background-color: #efefef;
     height: 100px;
     width: 100px;
 }
 .empty {
-    
+
 }
 .clear{
     clear: both;
@@ -17,7 +19,7 @@
 }
 
 .details {
-   background-color: #b2b2b2;
+    background-color: #b2b2b2;
     border: 1px solid white;
     border-radius: 10px;
     display: none;
@@ -50,7 +52,7 @@
 }
 
 .caltable {
-    
+
 }
 
 
@@ -74,13 +76,21 @@ input {
 
 }
 
+.boardroomCurrent {
+    background-color: darkgray;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 10px;
+    width: 200px;
+}
+
 .roomlink {
-        color: white;
+    color: white;
     text-decoration: none;
 }
 
 .butt {
-            color: white;
+    color: white;
     text-decoration: none;
 }
 

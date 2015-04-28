@@ -1,7 +1,7 @@
 
 <html>
     <head>
-        <title><?php echo isset($vars['title'])?$vars['title']:'Boardroom Booker'; ?></title>
+        <title><?php echo isset($vars['title']) ? $vars['title'] : 'Boardroom Booker'; ?></title>
         <link rel="stylesheet" href="/css/style.css" media="screen" />
         <script type='text/javascript' src='/js/jquery-2.1.3.min.js'></script>
         <script type='text/javascript' src='/js/booker.js'></script>
@@ -11,6 +11,20 @@
     </head>
 
     <body>
+        <?php
+        // var_dump($flash);
+        if (!empty($flash))
+        {
+            // var_dump($flash);
+            echo '<div class = "flashError">';
+            foreach ($flash as $value)
+            {
+                echo "$value";
+                echo '</br>';
+            }
+            echo '</div>';
+        }
+        ?>
         <div>
             <a href="/User/logout/?logout=true">
                 <div align="right">logout</div>
@@ -20,7 +34,13 @@
                 <?php
                 foreach ($vars['boardrooms'] as $key => $value)
                 {
-                    echo '<a href=?room=' . $value['id'] . ' class="roomlink"><div class="boardroom left" >' . $value['name'] . '</div></a>';
+                    if ($value['id'] === $vars['currentRoom'])
+                    {
+                        echo '<a href=?room=' . $value['id'] . ' class="roomlink"><div class="left boardroomCurrent" >' . $value['name'] . '</div></a>';
+                    } else
+                    {
+                        echo '<a href=?room=' . $value['id'] . ' class="roomlink"><div class="boardroom left" >' . $value['name'] . '</div></a>';
+                    }
                 }
                 ?>
             </div>
@@ -34,9 +54,9 @@
                         <div id="previousMonth" class="left"><img src="/img/left50.png"/></div>
                     </a>
                     <div id="monthCurrent" class="left">
-                        <?php
-                        echo $vars['currentMonth'] . ' ' . $vars['year'];
-                        ?>
+<?php
+echo $vars['currentMonth'] . ' ' . $vars['year'];
+?>
                     </div>
                     <a href="/?month=<?php echo $vars['nextMonth']; ?>&year=<?php echo $vars['nextYear']; ?>">
                         <div id="nextMonth" class="left"><img src="/img/right50.png"/></div>

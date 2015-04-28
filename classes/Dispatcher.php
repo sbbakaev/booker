@@ -34,6 +34,7 @@ class Dispatcher
      */
     public function dispatch($url)
     {
+
         $url = strtolower($url);
         $argument = explode("?", $url);
         $dispatch = explode("/", $argument[0]);
@@ -45,9 +46,32 @@ class Dispatcher
         {
             $this->method = $dispatch[2];
         }
-        $logined = UserController::checkAuth($this->class, $this->method);
-        $object = new $this->class($_GET, $_POST);
-        $object->{$this->method}();
+        //var_dump();
+        UserController::checkAuth($this->class, $this->method);
+        if ($this->checkExistMetod())
+        {
+            $object = new $this->class($_GET, $_POST);
+            $object->{$this->method}();
+        } else
+        {
+            $error = "You are been redirected.";
+            User::setFlash($error, 'errors');
+            $host = $_SERVER['HTTP_HOST'];
+            $extra = 'calendar.template.php';
+            header("Location: http://$host/");
+            exit;
+        }
+    }
+
+    public function checkExistMetod()
+    {
+        if (in_array(strtolower($this->method), array_map('strtolower', get_class_methods($this->class))))
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
     }
 
 }
