@@ -11,6 +11,7 @@
     </head>
 
     <body>
+        <div id="durationError" class="flashError"></div>
         <?php
         // var_dump($flash);
         if (!empty($flash))
@@ -54,9 +55,9 @@
                         <div id="previousMonth" class="left"><img src="/img/left50.png"/></div>
                     </a>
                     <div id="monthCurrent" class="left">
-<?php
-echo $vars['currentMonth'] . ' ' . $vars['year'];
-?>
+                        <?php
+                        echo $vars['currentMonth'] . ' ' . $vars['year'];
+                        ?>
                     </div>
                     <a href="/?month=<?php echo $vars['nextMonth']; ?>&year=<?php echo $vars['nextYear']; ?>">
                         <div id="nextMonth" class="left"><img src="/img/right50.png"/></div>
@@ -111,6 +112,7 @@ echo $vars['currentMonth'] . ' ' . $vars['year'];
 
                 </div>
             </div>
+
         </div>
 
     </body>

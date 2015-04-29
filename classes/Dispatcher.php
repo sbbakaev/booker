@@ -46,9 +46,8 @@ class Dispatcher
         {
             $this->method = $dispatch[2];
         }
-        //var_dump();
         UserController::checkAuth($this->class, $this->method);
-        if ($this->checkExistMetod())
+        if (method_exists($this->class, $this->method))
         {
             $object = new $this->class($_GET, $_POST);
             $object->{$this->method}();
@@ -60,17 +59,6 @@ class Dispatcher
             $extra = 'calendar.template.php';
             header("Location: http://$host/");
             exit;
-        }
-    }
-
-    public function checkExistMetod()
-    {
-        if (in_array(strtolower($this->method), array_map('strtolower', get_class_methods($this->class))))
-        {
-            return true;
-        } else
-        {
-            return false;
         }
     }
 

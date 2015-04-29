@@ -139,6 +139,61 @@ $(document).ready(function () {
 
     $('#update').on('click', function (event) {
         event.preventDefault();
+        	var d = new Date();
+//var timeSt = $('#dateStart').val();
+var arrStart = $('#dateStart').val().split(':');
+//var hourStartTime = new Date(0, 0, 0, arrSt[0], arrSt[1]);
+var arrEnd = $('#dateEnd').val().split(':');
+
+       //  $('#dateStart').val()
+        var hourStart = arrStart[0];
+        var minutStart = arrStart[1];
+        var hourEnd = arrEnd[0];
+        var minutEnd = arrEnd[1];
+        if ($('#timePrefStart').val() == "PM") {
+            hourStart = hourStart + 12;
+        }
+        if ($('#timePrefEnd').val() == "PM") {
+            hourEnd = hourEnd + 12;
+        }
+        var hourStartTime = new Date(0, 0, 0, hourStart, minutStart);
+        var hourEndTime = new Date(0, 0, 0, hourEnd, minutEnd);
+
+        if (hourStartTime.getTime() > hourEndTime.getTime()) {
+            $("#durationError").text('Time start must be lower time end').show();
+            return false;
+        }
+        else
+        {
+            $("#durationError").hide();
+        }
+
+        /*   if ($('[name="recurringEvent"]:checked').val() == "yes") {
+         if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
+         alert('Duration value of events must be from 1 to 4');
+         return false;
+         }
+         }*/
+        if ($('[name="recurringEvent"]:checked').val() == "yes") {
+            if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
+                $("#durationError").text('Duration value of events must be from 1 to 4').show();
+                return false;
+            }
+            else
+            {
+                $("#durationError").hide();
+            }
+        }
+
+        if ($('username') == "") {
+            $("#durationError").text('You need entry username').show();
+            return false;
+        }
+        else
+        {
+            $("#durationError").hide();
+        }
+        
         var postData = {};
         url = $(this).attr('href');
         postData.eventDate = $('#eventDate').text();
@@ -156,12 +211,13 @@ $(document).ready(function () {
             dataType: 'json',
             error: function (res)
             {
-
+                
             },
             success: function (res) {
                // console.log(res);
                 if (res.success)
                 {
+                    
                     $('#eventdetails').hide();
                 }
             }

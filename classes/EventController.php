@@ -25,7 +25,7 @@ class EventController extends Controller
             $id = (int) $this->dataGet["id"];
             $params['id'] = $id;
             $temp = $this->model->eventList($params);
-           
+
             $dateStart = new DateTime($temp[0]['date_start']);
             $dateEnd = new DateTime($temp[0]['date_end']);
             $res['dateEvent'] = $dateStart->format("Y-m-d H:i:s");
@@ -83,7 +83,6 @@ class EventController extends Controller
         $data[0]['roomId'] = $_SESSION['room']['id'];
         $data[0]['id'] = $this->dataPost['id'];
         $data[0]['description'] = $this->dataPost['description'];
-
         $dataCheck = $data;
         foreach ($dataCheck as $key => $value)
         {
@@ -252,6 +251,36 @@ class EventController extends Controller
         return $res;
     }
 
+    private function validateEvent($dateStart, $dateEnd)
+    {
+        $currentDay = new DateTime();
+        $message = "";
+        if ($currentDay > $dateStart || $currentDay > $dateEnd)
+        {
+            $message = "Current day mast be lower date start or end event.";
+        }
+        if ((int) $this->dataPost['durationEvents'] < 1 && (int) $this->dataPost['durationEvents'] > 4)
+        {
+            $message = $message . "</br> Duration value of events must be from 1 to 4t.";
+        }
+        if ($this->dataPost['username'] === "")
+        {
+            $message = $message . "</br> You need entry username.";
+        }
+        if ($message === "")
+        {
+            
+        } else
+        {
+            $error = $message;
+            User::setFlash($error, 'errors');
+            $this->view->setMainTemplate('blank');
+
+            $this->view->addTemplate('newevent')->render();
+            exit;
+        }
+    }
+
     /**
      * Создает новое событие, а так же выполняет все необходимые проверки. 
      * Например: Свободна комната или нет.
@@ -260,6 +289,7 @@ class EventController extends Controller
     {
         if ($this->validate())
         {
+            $canCreateEvent = TRUE;
             $monthEvent = $this->dataPost['month'];
             $dayEvent = $this->dataPost['days'];
             $yearEvent = $this->dataPost['year'];
@@ -269,6 +299,7 @@ class EventController extends Controller
             $hourEnd = $this->dataPost['hourEnd'];
             $minutEnd = $this->dataPost['minutEnd'];
             $timePrefEnd = $this->dataPost['timePrefEnd'];
+            // var_dump($this->dataPost);
             if ($timePrefStart == 'AM')
             {
                 $eventDateStart = new DateTime(date("Y-m-d H:i:s", mktime($hourStat, $minutStat, 0, $monthEvent, $dayEvent, $yearEvent)));
@@ -283,10 +314,10 @@ class EventController extends Controller
             {
                 $eventDateEnd = new DateTime(date("Y-m-d H:i:s", mktime($hourEnd + 12, $minutEnd, 0, $monthEvent, $dayEvent, $yearEvent)));
             }
+            $this->validateEvent($eventDateStart, $eventDateEnd);
             $recurringEvent = $this->dataPost['recurringEvent'];
             $recurringSpecify = $this->dataPost['recurringSpecify'];
             $durationEvents = $this->dataPost['durationEvents'];
-
             $data = $this->getRecurringArray($eventDateStart, $eventDateEnd, $recurringSpecify, $recurringEvent, $durationEvents);
             $dataCheck = $data;
             foreach ($dataCheck as $key => $value)
@@ -294,7 +325,7 @@ class EventController extends Controller
                 unset($dataCheck[$key]['userId']);
                 unset($dataCheck[$key]['description']);
             }
-            $canCreateEvent = TRUE;
+
             foreach ($dataCheck as $value)
             {
                 $eventInBD = $this->model->checkEvent($value);
@@ -329,11 +360,11 @@ class EventController extends Controller
                     $error = "Room is booked from " . $value['date_start'] . " to " . $value['date_end'];
                     User::setFlash($error, 'errors');
                     $this->view->setMainTemplate('blank');
-                   //$user = new User;
+                    //$user = new User;
                     //$res = $user->userList(NULL);
-                   // $this->view->setVar('users', $res);
+                    // $this->view->setVar('users', $res);
                 }
-                    $this->view->addTemplate('newevent')->render();
+                $this->view->addTemplate('newevent')->render();
             }
         } else
         {
