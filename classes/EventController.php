@@ -59,11 +59,22 @@ class EventController extends Controller
             }
         }
         $res = $this->model->deleteEvent($data);
-        $respone = array();
-        $respone['success'] = TRUE;
-        $respone['message'] = 'Event has been deleted';
-        echo json_encode($respone);
-        exit;
+        if ($res != null)
+        {
+            $respone = array();
+            $respone['success'] = TRUE;
+            $respone['message'] = 'Event has been deleted';
+            echo json_encode($respone);
+            exit;
+        } else
+        {
+
+            $respone = array();
+            $respone['success'] = FALSE;
+            $respone['message'] = 'Event dosn`t deleted';
+            echo json_encode($respone);
+            exit;
+        }
     }
 
     /**
@@ -257,7 +268,7 @@ class EventController extends Controller
         $message = "";
         if ($currentDay > $dateStart || $currentDay > $dateEnd)
         {
-            $message = "Current day mast be lower date start or end event.";
+            $message = "Current day mast be lower date start and date end event.";
         }
         if ((int) $this->dataPost['durationEvents'] < 1 && (int) $this->dataPost['durationEvents'] > 4)
         {
@@ -275,6 +286,9 @@ class EventController extends Controller
             $error = $message;
             User::setFlash($error, 'errors');
             $this->view->setMainTemplate('blank');
+            $user = new User;
+            $res = $user->userList(NULL);
+            $this->view->setVar('users', $res);
 
             $this->view->addTemplate('newevent')->render();
             exit;
@@ -350,6 +364,17 @@ class EventController extends Controller
                         $this->model->createEvent($value);
                     }
                 }
+                $error = 'Event is added';
+                User::setFlash($error, 'errors');
+                //  $this->view->setMainTemplate('main');
+                //$user = new User;
+                //$res = $user->userList(NULL);
+                //$this->view->setVar('users', $res);
+                //$this->view->setVar('eventDetails', $eventDetails);
+                // $this->view->addTemplate('calendar')->render();
+                //$this->view->addTemplate('newevent')->render();
+                //  exit;
+
                 $host = $_SERVER['HTTP_HOST'];
                 header("Location: http://$host");
                 exit;
@@ -360,9 +385,9 @@ class EventController extends Controller
                     $error = "Room is booked from " . $value['date_start'] . " to " . $value['date_end'];
                     User::setFlash($error, 'errors');
                     $this->view->setMainTemplate('blank');
-                    //$user = new User;
-                    //$res = $user->userList(NULL);
-                    // $this->view->setVar('users', $res);
+                    $user = new User;
+                    $res = $user->userList(NULL);
+                    $this->view->setVar('users', $res);
                 }
                 $this->view->addTemplate('newevent')->render();
             }

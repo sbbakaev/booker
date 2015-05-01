@@ -1,5 +1,5 @@
 <form method="post" action="/event/addEvent" id = "newevent">
-    <div id="durationError" class="flashError"></div>
+    <div id="messageError" class="flashError"></div>
     1. Booked for: <br />
     <select name="username" size=1>
         <?php

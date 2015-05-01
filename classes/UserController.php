@@ -91,7 +91,8 @@ class UserController extends Controller
                 }
             }
             $this->view->setMainTemplate('blank');
-            if (isset($this->dataPost['name']) && $this->dataPost['name'] != '')
+            if (isset($this->dataPost['name']) && $this->dataPost['name'] != '' && $this->validate())
+            //if($this->validate())
             {
                 $dataUser['mail'] = $this->dataPost['mail'];
                 $dataUser['name'] = $this->dataPost['name'];
@@ -108,9 +109,14 @@ class UserController extends Controller
                 $this->model->addPreference($dataPreference);
                 $host = $_SERVER['HTTP_HOST'];
                 header("Location: http://$host/user/getUsers");
+
                 exit;
             } else
             {
+                foreach ($this->dataPost as $key => $value)
+                {
+                              $this->view->setVar($key, $value);
+                }
                 $this->view->addTemplate('newuser')->render();
             }
         } else
@@ -121,6 +127,53 @@ class UserController extends Controller
             $host = $_SERVER['HTTP_HOST'];
             header("Location: http://$host");
             exit;
+        }
+    }
+
+    private function validate()
+    {
+        $createUser = true;
+        $message = "";
+        if (!isset($this->dataPost['mail']) || $this->dataPost['mail'] == "")
+        {
+            $createUser = false;
+            $message = $message . "Enter a mail. ";
+        }
+        if (!isset($this->dataPost['name']) || $this->dataPost['name'] == "")
+        {
+            $createUser = false;
+            $message = $message . "Enter a name. ";
+        }
+        if (!isset($this->dataPost['surname']) || $this->dataPost['surname'] == "")
+        {
+            $createUser = false;
+            $message = $message . "Enter a surname. ";
+        }
+        if (!isset($this->dataPost['password']) || $this->dataPost['password'] == "")
+        {
+            $createUser = false;
+            $message = $message . "Enter a surname. ";
+        }
+        if (!isset($this->dataPost['username']) || $this->dataPost['username'] == "")
+        {
+            $createUser = false;
+            $message = $message . "Enter a username. ";
+        }
+        if (!isset($this->dataPost['password']) || $this->dataPost['password'] == "")
+        {
+            $createUser = false;
+            $message = $message . "Enter a password. ";
+        }
+
+        if (!$createUser)
+        {
+
+            $error = $message;
+            User::setFlash($error, 'errors');
+            return false;
+        } else
+        {
+            return TRUE;
         }
     }
 
@@ -152,12 +205,14 @@ class UserController extends Controller
             {
                 $_SESSION['userData'] = $res;
                 $host = $_SERVER['HTTP_HOST'];
-                $extra = 'calendar.template.php';
+                //$extra = 'calendar.template.php';
                 header("Location: http://$host/event/showCalendar");
                 exit;
             } else
             {
-                exit('empty login result');
+                $error = "Username or password is wrong. Please enter correct data.";
+                User::setFlash($error, 'errors');
+                $this->view->addTemplate('login')->render();
             }
         } else
         {

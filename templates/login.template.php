@@ -5,6 +5,7 @@
     </head>
 
     <body>
+        <div id="messageError" class="flashError"></div>
         <form method="post">
             Username: <input type="text" name="user" /><br />
             Password: <input type="password" name="password" /><br />

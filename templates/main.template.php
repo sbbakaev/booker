@@ -11,7 +11,7 @@
     </head>
 
     <body>
-        <div id="durationError" class="flashError"></div>
+        <div id="messageError" class="flashError"></div>
         <?php
         // var_dump($flash);
         if (!empty($flash))

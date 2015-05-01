@@ -28,7 +28,7 @@ $(document).ready(function () {
 
     $('#hourEnd').val(function () {
         var hourEnd = new Date().getHours();
-        
+
         $('#minutEnd').val(59);
         if (hourEnd > 12)
         {
@@ -44,19 +44,19 @@ $(document).ready(function () {
     });
 
     /*$('#hourStat').val(function () {
-        var hourStart = new Date().getHours();
-        if (hourStart > 12)
-        {
-            $('#timePrefStart').val("PM")
-            hourStart = hourStart - 12;
-            return hourStart;
-        }
-        else {
-            $('#timePrefStart').val("AM");
-            return hourStart;
-        }
-
-    });*/
+     var hourStart = new Date().getHours();
+     if (hourStart > 12)
+     {
+     $('#timePrefStart').val("PM")
+     hourStart = hourStart - 12;
+     return hourStart;
+     }
+     else {
+     $('#timePrefStart').val("AM");
+     return hourStart;
+     }
+     
+     });*/
 
 
 
@@ -139,13 +139,13 @@ $(document).ready(function () {
 
     $('#update').on('click', function (event) {
         event.preventDefault();
-        	var d = new Date();
+        var d = new Date();
 //var timeSt = $('#dateStart').val();
-var arrStart = $('#dateStart').val().split(':');
+        var arrStart = $('#dateStart').val().split(':');
 //var hourStartTime = new Date(0, 0, 0, arrSt[0], arrSt[1]);
-var arrEnd = $('#dateEnd').val().split(':');
+        var arrEnd = $('#dateEnd').val().split(':');
 
-       //  $('#dateStart').val()
+        //  $('#dateStart').val()
         var hourStart = arrStart[0];
         var minutStart = arrStart[1];
         var hourEnd = arrEnd[0];
@@ -160,12 +160,12 @@ var arrEnd = $('#dateEnd').val().split(':');
         var hourEndTime = new Date(0, 0, 0, hourEnd, minutEnd);
 
         if (hourStartTime.getTime() > hourEndTime.getTime()) {
-            $("#durationError").text('Time start must be lower time end').show();
+            $("#messageError").text('Time start must be lower time end').show();
             return false;
         }
         else
         {
-            $("#durationError").hide();
+            $("#messageError").hide();
         }
 
         /*   if ($('[name="recurringEvent"]:checked').val() == "yes") {
@@ -176,24 +176,24 @@ var arrEnd = $('#dateEnd').val().split(':');
          }*/
         if ($('[name="recurringEvent"]:checked').val() == "yes") {
             if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
-                $("#durationError").text('Duration value of events must be from 1 to 4').show();
+                $("#messageError").text('Duration value of events must be from 1 to 4').show();
                 return false;
             }
             else
             {
-                $("#durationError").hide();
+                $("#messageError").hide();
             }
         }
 
         if ($('username') == "") {
-            $("#durationError").text('You need entry username').show();
+            $("#messageError").text('You need entry username').show();
             return false;
         }
         else
         {
-            $("#durationError").hide();
+            $("#messageError").hide();
         }
-        
+
         var postData = {};
         url = $(this).attr('href');
         postData.eventDate = $('#eventDate').text();
@@ -202,7 +202,7 @@ var arrEnd = $('#dateEnd').val().split(':');
         postData.description = $('#description').val();
         postData.dateEnd = $('#dateEnd').val();
         postData.id = $('#eventId').text();
-       // console.log($('#eventId').val());
+        // console.log($('#eventId').val());
         $.ajax({
             type: "POST",
             url: url,
@@ -211,18 +211,18 @@ var arrEnd = $('#dateEnd').val().split(':');
             dataType: 'json',
             error: function (res)
             {
-                
+
             },
             success: function (res) {
-               // console.log(res);
+                // console.log(res);
                 if (res.success)
                 {
-                    
                     $('#eventdetails').hide();
+                    location.reload();
                 }
             }
         });
-       // console.log(url);
+        // console.log(url);
     });
 
     $('#newevent').submit(function () {
@@ -240,12 +240,12 @@ var arrEnd = $('#dateEnd').val().split(':');
         var hourEndTime = new Date(0, 0, 0, hourEnd, minutEnd);
 
         if (hourStartTime.getTime() > hourEndTime.getTime()) {
-            $("#durationError").text('Time start must be lower time end').show();
+            $("#messageError").text('Time start must be lower time end').show();
             return false;
         }
         else
         {
-            $("#durationError").hide();
+            $("#messageError").hide();
         }
 
         /*   if ($('[name="recurringEvent"]:checked').val() == "yes") {
@@ -256,22 +256,22 @@ var arrEnd = $('#dateEnd').val().split(':');
          }*/
         if ($('[name="recurringEvent"]:checked').val() == "yes") {
             if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
-                $("#durationError").text('Duration value of events must be from 1 to 4').show();
+                $("#messageError").text('Duration value of events must be from 1 to 4').show();
                 return false;
             }
             else
             {
-                $("#durationError").hide();
+                $("#messageError").hide();
             }
         }
 
         if ($('username') == "") {
-            $("#durationError").text('You need entry username').show();
+            $("#messageError").text('You need entry username').show();
             return false;
         }
         else
         {
-            $("#durationError").hide();
+            $("#messageError").hide();
         }
     });
 
@@ -291,20 +291,22 @@ var arrEnd = $('#dateEnd').val().split(':');
             dataType: 'json',
             error: function (res)
             {
-
+                $("#messageError").text(res.message).show();
             },
             success: function (res) {
-               // console.log(res);
+                // console.log(res);
                 if (res.success)
                 {
+                    $("#messageError").text(res.message).show();
                     $('#eventdetails').hide();
+                    setTimeout('location.reload();', 3000);
                 }
             }
         });
 
         //console.log(url);
     });
-    $('#newuser').submit(function () {
+   /* $('#newuser').submit(function () {
         var createUser = true;
         var message = "";
         if ($('#name').val() == "")
@@ -333,13 +335,13 @@ var arrEnd = $('#dateEnd').val().split(':');
             message = message + "Enter a password.";
         }
         if (!createUser) {
-            $("#durationError").text(message).show();
+            $("#messageError").text(message).show();
             return false;
         }
         else
         {
-            $("#durationError").hide();
+            $("#messageError").hide();
         }
-    });
+    });*/
 });
 
