@@ -68,13 +68,13 @@
                 }
 
                 echo '<td class="cell">' . $i . '</br>';
-                //var_dump($events);
+
                 if (isset($events[$i][0]['id']))
                 {
             
                     foreach ($events[$i] as $value)
         {
-                        echo '<a href=/Event/showEventDetails?id='.$value['id'].' class="current">'.$value['date_start'] . '-';
+                        echo '<a href="/Event/showEventDetails?id='.$value['id'].'" recurrentid="'.$value['recurrent_id'].'" class="current">'.$value['date_start'] . '-';
                         echo $value['date_end'].'</a>';
                         echo '</br>';
                     }

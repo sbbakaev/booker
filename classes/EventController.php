@@ -20,6 +20,7 @@ class EventController extends Controller
      */
     public function showEventDetails()
     {
+        // var_dump($this->dataGet["id"]);
         if (isset($this->dataGet["id"]))
         {
             $id = (int) $this->dataGet["id"];
@@ -100,17 +101,17 @@ class EventController extends Controller
             unset($dataCheck[$key]['description']);
         }
 
-        $canCreateEvent = TRUE;
+        $canUpdateEvent = TRUE;
         //Проверяю свободное время
         foreach ($dataCheck as $value)
         {
             $eventInBD = $this->model->checkEvent($value);
             if (!empty($eventInBD))
             {
-                $canCreateEvent = FALSE;
+                $canUpdateEvent = FALSE;
             }
         }
-        if ($canCreateEvent)
+        if ($canUpdateEvent)
         {
             foreach ($data as $value)
             {
@@ -176,6 +177,7 @@ class EventController extends Controller
         $params['room_id'] = $_SESSION['room']['id'];
 
         $res = $this->model->eventList($params);
+        // var_dump($res);
         $dataArray = array();
         foreach ($res as $value)
         {
@@ -183,11 +185,19 @@ class EventController extends Controller
             $tmpStart = new DateTime($value['date_start']);
             $tmpEnd = new DateTime($value['date_end']);
             $temp['id'] = $value['id'];
-            $temp['date_start'] = $tmpStart->format('H:i');
-            $temp['date_end'] = $tmpEnd->format('H:i');
+            if ($_SESSION['userData'][0]['timeFormat24'])
+            {
+                $temp['recurrent_id'] = $value['recurrent_id'];
+                $temp['date_start'] = $tmpStart->format('H:i');
+                $temp['date_end'] = $tmpEnd->format('H:i');
+            } else
+            {
+                $temp['recurrent_id'] = $value['recurrent_id'];
+                $temp['date_start'] = $tmpStart->format('g:i a');
+                $temp['date_end'] = $tmpEnd->format('g:i a');
+            }
             $dataArray[(int) $tmpStart->format('d')][] = $temp;
         }
-        $eventDetails = $this->showEventDetails();
 
         $this->view->setVar('currentRoom', $_SESSION['room']);
         $this->view->setVar('boardrooms', $_SESSION['rooms']);
@@ -199,7 +209,7 @@ class EventController extends Controller
         $this->view->setVar('nextYear', $nextYear);
         $this->view->setVar('calendarData', $caledarData);
         $this->view->setVar('res', $dataArray);
-        $this->view->setVar('eventDetails', $eventDetails);
+        //$this->view->setVar('eventDetails', $eventDetails);
         $this->view->addTemplate('calendar')->render();
     }
 
@@ -266,7 +276,7 @@ class EventController extends Controller
     {
         $currentDay = new DateTime();
         $message = "";
-        if ($currentDay > $dateStart || $currentDay > $dateEnd)
+        if ($currentDay < $dateStart || $currentDay > $dateEnd)
         {
             $message = "Current day mast be lower date start and date end event.";
         }
@@ -366,15 +376,6 @@ class EventController extends Controller
                 }
                 $error = 'Event is added';
                 User::setFlash($error, 'errors');
-                //  $this->view->setMainTemplate('main');
-                //$user = new User;
-                //$res = $user->userList(NULL);
-                //$this->view->setVar('users', $res);
-                //$this->view->setVar('eventDetails', $eventDetails);
-                // $this->view->addTemplate('calendar')->render();
-                //$this->view->addTemplate('newevent')->render();
-                //  exit;
-
                 $host = $_SERVER['HTTP_HOST'];
                 header("Location: http://$host");
                 exit;

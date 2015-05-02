@@ -3,7 +3,7 @@ $(document).ready(function () {
 
     $('html').on('click', function () {
         $('#eventdetails').hide();
-
+        // $('#confirmDelete').hide();
     });
 
     $('#eventdetails').on('click', function (event) {
@@ -12,7 +12,8 @@ $(document).ready(function () {
 
     $('#hourStat').val(function () {
         var hourStart = new Date().getHours();
-        $('#minutStat').val(0);
+        var minutStat = new Date().getMinutes();
+        $('#minutStat').val(minutStat);
         if (hourStart > 12)
         {
             $('#timePrefStart').val("PM")
@@ -28,7 +29,7 @@ $(document).ready(function () {
 
     $('#hourEnd').val(function () {
         var hourEnd = new Date().getHours();
-
+        
         $('#minutEnd').val(59);
         if (hourEnd > 12)
         {
@@ -57,6 +58,13 @@ $(document).ready(function () {
      }
      
      });*/
+
+    $('.deleteUser').on('click', function (event) {
+        event.preventDefault();
+        $('#confirmDelete').show();
+        var url = $(this).attr('href');
+        $('#ok').attr('href', url);
+    })
 
 
 
@@ -120,11 +128,12 @@ $(document).ready(function () {
             {
             },
             success: function (res) {
-
+                // $('#eventdetails').show();
                 $('#dateStart').val(res.date_start);
                 $('#dateEnd').val(res.date_end);
                 $('#description').val(res.description);
                 $('#user').val(res.user);
+                // alert($('#user').text());
                 $('#dateSubmitted').val(res.dateCreateEvent);
                 $('#eventDate').text(res.dateEvent);
                 $('#eventId').text(res.eventId);
@@ -168,12 +177,7 @@ $(document).ready(function () {
             $("#messageError").hide();
         }
 
-        /*   if ($('[name="recurringEvent"]:checked').val() == "yes") {
-         if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
-         alert('Duration value of events must be from 1 to 4');
-         return false;
-         }
-         }*/
+       
         if ($('[name="recurringEvent"]:checked').val() == "yes") {
             if ($('#durationEvents').val() <= 0 || $('#durationEvents').val() > 4) {
                 $("#messageError").text('Duration value of events must be from 1 to 4').show();
@@ -200,7 +204,6 @@ $(document).ready(function () {
         postData.dateStart = $('#dateStart').val();
         postData.dateEnd = $('#dateEnd').val();
         postData.description = $('#description').val();
-        postData.dateEnd = $('#dateEnd').val();
         postData.id = $('#eventId').text();
         // console.log($('#eventId').val());
         $.ajax({
@@ -217,12 +220,16 @@ $(document).ready(function () {
                 // console.log(res);
                 if (res.success)
                 {
-                    $('#eventdetails').hide();
-                    location.reload();
+                    $("#messageError").text(res.message).show();
+                   
+                    if($('input[name="deleteAllEvent"]').prop("checked"))
+                    {
+                        $('[recurrentid="'+$('#recurrentId').text()+'"]').text($('#dateStart').val()+"-"+$('#dateEnd').val());
+                    }
+                     $('#eventdetails').hide(); 
                 }
             }
         });
-        // console.log(url);
     });
 
     $('#newevent').submit(function () {
@@ -299,14 +306,14 @@ $(document).ready(function () {
                 {
                     $("#messageError").text(res.message).show();
                     $('#eventdetails').hide();
-                    setTimeout('location.reload();', 3000);
+                    setTimeout('location.reload();', 2000);
                 }
             }
         });
 
         //console.log(url);
     });
-   /* $('#newuser').submit(function () {
+    $('#newuser').submit(function () {
         var createUser = true;
         var message = "";
         if ($('#name').val() == "")
@@ -342,6 +349,6 @@ $(document).ready(function () {
         {
             $("#messageError").hide();
         }
-    });*/
+    });
 });
 

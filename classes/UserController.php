@@ -25,7 +25,7 @@ class UserController extends Controller
         {
             if (isset($this->dataPost['username']))
             {
-                if (!$this->checkDoubleUser($this->dataPost['username']))
+                if (!$this->checkDoubleUser($this->dataPost['username'], $this->dataPost['userid']))
                 {
                     $error = "Username is allready exist.";
                     User::setFlash($error, 'errors');
@@ -82,7 +82,7 @@ class UserController extends Controller
         {
             if (isset($this->dataPost['username']))
             {
-                if (!$this->checkDoubleUser($this->dataPost['username']))
+                if (!$this->checkDoubleUser($this->dataPost['username'], null))
                 {
                     $error = "Username is allready exist.";
                     User::setFlash($error, 'errors');
@@ -115,7 +115,7 @@ class UserController extends Controller
             {
                 foreach ($this->dataPost as $key => $value)
                 {
-                              $this->view->setVar($key, $value);
+                    $this->view->setVar($key, $value);
                 }
                 $this->view->addTemplate('newuser')->render();
             }
@@ -313,10 +313,15 @@ class UserController extends Controller
         }
     }
 
-    public function checkDoubleUser($param)
+    public function checkDoubleUser($param, $idUser)
     {
         $data['username'] = $this->dataPost['username'];
+        if(isset($idUser) && $idUser !=NULL)
+        {
+            $data['id'] = $idUser;
+        }
         $res = $this->model->getUserUsername($data);
+        
         if ($res[0]['count'] > 0)
         {
             return false;
