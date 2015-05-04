@@ -13,10 +13,8 @@
     <body>
         <div id="messageError" class="flashError"></div>
         <?php
-        // var_dump($flash);
         if (!empty($flash))
         {
-            // var_dump($flash);
             echo '<div class = "flashError">';
             foreach ($flash as $value)
             {
@@ -94,8 +92,8 @@
                     <input type="TEXT" id = "user" style="width: 200px;float: left"></input>
                 </div>
                 <div   class="clear">
-                    <div style="width: 50px;float: left">Submitted:</div>
-                    <input type="TEXT" id = "dateSubmitted" style="width: 200px;float: left"></input>
+                    <div style="width: 70px;float: left">Submitted:</div>
+                    <div id = "dateSubmitted" style="width: 200px;float: left"></div>
                 </div>
                 <div class="clear">
                     <input type=checkbox name="deleteAllEvent" value="TRUE" >

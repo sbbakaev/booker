@@ -31,7 +31,6 @@ class Viewer
     public function addTemplate($template)
     {
         $file = './templates/' . $template . '.template.php';
-        // var_dump($file);exit;
         if (file_exists($file))
         {
             $this->templates[] = $file;
@@ -96,7 +95,6 @@ class Viewer
         $vars = $this->vars;
 
         $flash = User::getFlash('errors');
-        //var_dump($flash);
         include $this->mainTemplate;
     }
 

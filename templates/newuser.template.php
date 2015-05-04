@@ -1,5 +1,6 @@
 
 <form method="post" action="/user/addUser" id = "newuser">
+    <div id="messageError" class="flashError"></div>
     1. 	Enter new employee name <br />
     <input type="text" name="name" class = "newuser" id ="name" maxlen=1
            value=    <?php

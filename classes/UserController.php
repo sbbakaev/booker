@@ -20,47 +20,51 @@ class UserController extends Controller
      */
     public function editUser()
     {
-        $hasPermision = UserController::checkPermision('UserController', 'addUser');
+       $hasPermision = UserController::checkPermision('UserController', 'addUser');
         if ($hasPermision)
         {
             if (isset($this->dataPost['username']))
             {
-                if (!$this->checkDoubleUser($this->dataPost['username'], $this->dataPost['userid']))
-                {
-                    $error = "Username is allready exist.";
-                    User::setFlash($error, 'errors');
-                    $this->view->addTemplate('newuser')->render();
-                    exit;
-                }
+                //                  $this->checkDoubleUser($this->dataPost['username'], $this->dataPost['userid']);
             }
+            /*
+              if (!$this->checkDoubleUser($this->dataPost['username'], $this->dataPost['userid']))
+              {
+              $error = "Username is allready exist.";
+              User::setFlash($error, 'errors');
+              $this->view->addTemplate('newuser')->render();
+              exit;
+              }
+              } */
             $this->view->setMainTemplate('blank');
-            if (isset($this->dataPost['name']))
-            {
-                $data['name'] = $this->dataPost['name'];
+            /* if (isset($this->dataPost['name']))
+              { */
+            $this->validate("editUser");
+            $data['name'] = $this->dataPost['name'];
 
-                if (isset($this->dataPost['password']) && $this->dataPost['password'] != '')
-                {
-                    $data['password'] = sha1($this->dataPost['password']);
-                }
-                $data['surname'] = $this->dataPost['surname'];
-                $data['mail'] = $this->dataPost['mail'];
-                $data['username'] = $this->dataPost['username'];
-                $data['id'] = $this->dataPost['userid'];
-                $data['idUser'] = $this->dataPost['userid'];
-                $data['firstDayWeek'] = $this->dataPost['firstdayweek'];
-                $data['isAdmin'] = $this->dataPost['userRights'];
-                $data['timeFormat24'] = $this->dataPost['timeFormate'];
-                $data['idUser'] = $this->dataPost['userid'];
-                $this->model->updateUser($data);
-                $this->getUsers();
-            } else
+            if (isset($this->dataPost['password']) && $this->dataPost['password'] != '')
             {
-                $data['userId'] = $this->dataGet['userid'];
-                $res = $this->model->getUserDetails($data);
-                $this->view->setVar('vars', $res);
-                $this->view->addTemplate('edituser')->render();
+                $data['password'] = sha1($this->dataPost['password']);
             }
-        } else
+            $data['surname'] = $this->dataPost['surname'];
+            $data['mail'] = $this->dataPost['mail'];
+            $data['username'] = $this->dataPost['username'];
+            $data['id'] = $this->dataPost['userid'];
+            $data['idUser'] = $this->dataPost['userid'];
+            $data['firstDayWeek'] = $this->dataPost['firstdayweek'];
+            $data['isAdmin'] = $this->dataPost['userRights'];
+            $data['timeFormat24'] = $this->dataPost['timeFormate'];
+            $data['idUser'] = $this->dataPost['userid'];
+            $this->model->updateUser($data);
+            $this->getUsers();
+        } /* else
+          {
+          $data['userId'] = $this->dataGet['userid'];
+          $res = $this->model->getUserDetails($data);
+          $this->view->setVar('vars', $res[0]);
+          $this->view->addTemplate('edituser')->render();
+          }
+          } */ else
         {
             $error = "You don`t have permission to see user list.";
             User::setFlash($error, 'errors');
@@ -82,18 +86,23 @@ class UserController extends Controller
         {
             if (isset($this->dataPost['username']))
             {
-                if (!$this->checkDoubleUser($this->dataPost['username'], null))
-                {
-                    $error = "Username is allready exist.";
-                    User::setFlash($error, 'errors');
-                    $this->view->addTemplate('newuser')->render();
-                    exit;
-                }
+                $this->checkDoubleUser($this->dataPost['username'], null);
+                /* if (!$this->checkDoubleUser($this->dataPost['username'], null))
+                  {
+                  $error = "Username is allready exist.";
+                  User::setFlash($error, 'errors');
+                  $this->view->addTemplate('newuser')->render();
+                  exit;
+                  } */
             }
+
             $this->view->setMainTemplate('blank');
-            if (isset($this->dataPost['name']) && $this->dataPost['name'] != '' && $this->validate())
-            //if($this->validate())
+
+            if (isset($this->dataPost['name']) && $this->dataPost['name'] != '')
             {
+                $this->validate("addUser");
+
+
                 $dataUser['mail'] = $this->dataPost['mail'];
                 $dataUser['name'] = $this->dataPost['name'];
                 $dataUser['surname'] = $this->dataPost['surname'];
@@ -115,6 +124,8 @@ class UserController extends Controller
             {
                 foreach ($this->dataPost as $key => $value)
                 {
+                    $error = "you don`t enrtry correct data.";
+                    User::setFlash($error, 'errors');
                     $this->view->setVar($key, $value);
                 }
                 $this->view->addTemplate('newuser')->render();
@@ -130,50 +141,132 @@ class UserController extends Controller
         }
     }
 
-    private function validate()
+    private function validate($method)
     {
-        $createUser = true;
+
+        $validate = true;
         $message = "";
-        if (!isset($this->dataPost['mail']) || $this->dataPost['mail'] == "")
+        if (count($this->dataPost) > 0)
         {
-            $createUser = false;
-            $message = $message . "Enter a mail. ";
-        }
-        if (!isset($this->dataPost['name']) || $this->dataPost['name'] == "")
-        {
-            $createUser = false;
-            $message = $message . "Enter a name. ";
-        }
-        if (!isset($this->dataPost['surname']) || $this->dataPost['surname'] == "")
-        {
-            $createUser = false;
-            $message = $message . "Enter a surname. ";
-        }
-        if (!isset($this->dataPost['password']) || $this->dataPost['password'] == "")
-        {
-            $createUser = false;
-            $message = $message . "Enter a surname. ";
-        }
-        if (!isset($this->dataPost['username']) || $this->dataPost['username'] == "")
-        {
-            $createUser = false;
-            $message = $message . "Enter a username. ";
-        }
-        if (!isset($this->dataPost['password']) || $this->dataPost['password'] == "")
-        {
-            $createUser = false;
-            $message = $message . "Enter a password. ";
-        }
+            if (!isset($this->dataPost['mail']) || $this->dataPost['mail'] == "")
+            {
+                $validate = false;
+                $message = $message . "Enter a mail. ";
+            } else
+            {
+                if (preg_match("/@/", $this->dataPost['mail']) < 1)
+                {
+                    $validate = false;
+                    $error = 'Your e-mail must contain "@".';
+                    User::setFlash($error, 'errors');
+                }
+            }
 
-        if (!$createUser)
-        {
+            if (!isset($this->dataPost['name']) || $this->dataPost['name'] == "")
+            {
+                $validate = false;
+                $message = $message . "Enter a name. ";
+            } else
+            {
+                $tmp = User::validate($this->dataPost['name']);
+                if (!$tmp)
+                {
+                    $validate = $tmp;
+                }
+            }
 
-            $error = $message;
-            User::setFlash($error, 'errors');
-            return false;
+            if (!isset($this->dataPost['surname']) || $this->dataPost['surname'] == "")
+            {
+                $validate = false;
+                $message = $message . "Enter a surname. ";
+            } else
+            {
+                $tmp = User::validate($this->dataPost['surname']);
+                if (!$tmp)
+                {
+                    $validate = $tmp;
+                }
+            }
+
+            if (!isset($this->dataPost['password']) || $this->dataPost['password'] == "")
+            {
+                $validate = false;
+                $message = $message . "Enter a password. ";
+            } else
+            {
+                if (strlen($this->dataPost['password']) < 4)
+                {
+                    $validate = false;
+                    $error = "Your password must contain 4 symbols.";
+                    User::setFlash($error, 'errors');
+                }
+                $tmp = User::validate($this->dataPost['password']);
+                if (!$tmp)
+                {
+                    $validate = $tmp;
+               }
+            }
+
+            if (!isset($this->dataPost['username']) || $this->dataPost['username'] == "")
+            {
+                $validate = false;
+                $message = $message . "Enter a username. ";
+            } else
+            {
+                $tmp = User::validate($this->dataPost['username']);
+                if (!$tmp)
+                {
+                    $validate = $tmp;
+                }
+            }
+
+            if (!$validate)
+            {
+                User::setFlash($message, 'errors');
+            }
+            if (!$validate)
+            {
+                $error = "You need entre correct data. Only chars and number.";
+                User::setFlash($error, 'errors');
+            }
         } else
         {
-            return TRUE;
+            $data['userId'] = $this->dataGet['userid'];
+            $res = $this->model->getUserDetails($data);
+            $this->view->setVar('vars', $res[0]);
+            $this->view->addTemplate('edituser')->render();
+            exit;
+        }
+        if (!$validate)
+        {
+
+            if ($method == "editUser")
+            {
+                if (count($this->dataPost) > 0)
+                {
+                    foreach ($this->dataPost as $key => $value)
+                    {
+                        $arr[$key] = $value;
+                    }
+                    $this->view->setVar('vars', $arr);
+                    $this->view->addTemplate('edituser')->render();
+                } elseif (count($this->dataGet) > 0)
+                {
+                    $data['userId'] = $this->dataGet['userid'];
+                    $res = $this->model->getUserDetails($data);
+                    $this->view->setVar('vars', $res[0]);
+                    $this->view->addTemplate('edituser')->render();
+                }
+            } else
+            {
+                foreach ($this->dataPost as $key => $value)
+                {
+                    $this->view->setVar($key, $value);
+                }
+                $this->view->addTemplate('newuser')->render();
+            }
+
+            exit;
         }
     }
 
@@ -316,18 +409,22 @@ class UserController extends Controller
     public function checkDoubleUser($param, $idUser)
     {
         $data['username'] = $this->dataPost['username'];
-        if(isset($idUser) && $idUser !=NULL)
+        if (isset($idUser) && $idUser != NULL)
         {
             $data['id'] = $idUser;
         }
         $res = $this->model->getUserUsername($data);
-        
+
         if ($res[0]['count'] > 0)
         {
-            return false;
-        } else
-        {
-            return true;
+            foreach ($this->dataPost as $key => $value)
+            {
+                $this->view->setVar($key, $value);
+            }
+            $error = "Username is allready exist.";
+            User::setFlash($error, 'errors');
+            $this->view->addTemplate('newuser')->render();
+            exit;
         }
     }
 

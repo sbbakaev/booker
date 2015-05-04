@@ -40,7 +40,12 @@ class User extends sql
         return $res;
     }
 
-    /**
+    static public function validate($var)
+    {
+        return ctype_alnum($var);
+    }
+
+     /**
      * Добавляет данные по сотруднику.
      * @param array $params содержит name, password, surname, username, mail.
      * @return int последнего добавленного события.

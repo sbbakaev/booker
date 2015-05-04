@@ -20,7 +20,6 @@ class EventController extends Controller
      */
     public function showEventDetails()
     {
-        // var_dump($this->dataGet["id"]);
         if (isset($this->dataGet["id"]))
         {
             $id = (int) $this->dataGet["id"];
@@ -84,45 +83,146 @@ class EventController extends Controller
      */
     public function updateEvent()
     {
-
-        $date = explode(" ", $this->dataPost['eventDate']);
-
-        $eventDateStart = new DateTime($date[0] . $this->dataPost['dateStart']);
-        $eventDateEnd = new DateTime($date[0] . $this->dataPost['dateEnd']);
-
-        $data[0]['dateStart'] = $eventDateStart->format('Y-m-d H:i:s');
-        $data[0]['dateEnd'] = $eventDateEnd->format('Y-m-d H:i:s');
-        $data[0]['roomId'] = $_SESSION['room']['id'];
-        $data[0]['id'] = $this->dataPost['id'];
-        $data[0]['description'] = $this->dataPost['description'];
-        $dataCheck = $data;
-        foreach ($dataCheck as $key => $value)
+        if ($this->dataPost['deleteAllEvent'] == "true")
         {
-            unset($dataCheck[$key]['description']);
-        }
 
-        $canUpdateEvent = TRUE;
-        //Проверяю свободное время
-        foreach ($dataCheck as $value)
-        {
-            $eventInBD = $this->model->checkEvent($value);
-            if (!empty($eventInBD))
+            $res = $this->model->eventList(array('recurrent_id' => $this->dataPost['recurrentId']));
+
+
+            list($hourStart, $minutStart) = explode(":", $this->dataPost['dateStart']);
+            list($hourEnd, $minutEnd) = explode(":", $this->dataPost['dateEnd']);
+
+            $ind = 0;
+            foreach ($res as $value)
             {
-                $canUpdateEvent = FALSE;
+                $date = explode(" ", $value['date_start']);
+                $eventDateStart = new DateTime($date[0] . $hourStart . $minutStart);
+                $eventDateEnd = new DateTime($date[0] . $hourEnd . $minutEnd);
+                $data[$ind]['dateStart'] = $eventDateStart->format('Y-m-d H:i:s');
+                $data[$ind]['dateEnd'] = $eventDateEnd->format('Y-m-d H:i:s');
+                $data[$ind]['roomId'] = $_SESSION['room']['id'];
+                $data[$ind]['roomId'] = $_SESSION['room']['id'];
+                $data[$ind]['id'] = $value['id'];
+                $data[$ind]['description'] = $value['description'];
+                $ind++;
             }
-        }
-        if ($canUpdateEvent)
-        {
+
+            $canUpdateEvent = TRUE;
+            //Проверяю свободное время
             foreach ($data as $value)
             {
-                $this->model->updateEvent($value);
+                $tmp = $this->model->checkEvent($value);
+                if (!empty($tmp))
+                {
+                    $eventInBD[] = $tmp;
+                    $canUpdateEvent = FALSE;
+                }
             }
-            $respone = array();
-            $respone['success'] = TRUE;
-            $respone['message'] = 'Event has been updated';
-            echo json_encode($respone);
-            exit;
+            if ($canUpdateEvent)
+            {
+                foreach ($data as $value)
+                {
+
+                    $this->model->updateEvent($value, $this->dataPost['deleteAllEvent']);
+                }
+                $tmpStart = new DateTime($data[0]['dateStart']);
+                $tmpEnd = new DateTime($data[0]['dateEnd']);
+
+                $respone = array();
+                $respone['success'] = TRUE;
+                $respone['time'] = $this->getStringTime($tmpStart) . "-" . $this->getStringTime($tmpEnd);
+                $respone['message'] = 'Event has been updated';
+                echo json_encode($respone);
+                exit;
+            } else
+            {
+                $respone = array();
+                $respone['success'] = FALSE;
+                $message = " Room is booked: ";
+                foreach ($eventInBD as $tmpArr)
+                {
+                    
+                    
+                    foreach ($tmpArr as $value)
+                    {
+                        $message = $message." from ".$value['date_start'] . " to " . $value['date_end'];
+                    }
+                }
+                $respone['message'] = $message;
+                echo json_encode($respone);
+            }
+        } else
+        {
+            $date = explode(" ", $this->dataPost['eventDate']);
+
+            $eventDateStart = new DateTime($date[0] . $this->dataPost['dateStart']);
+            $eventDateEnd = new DateTime($date[0] . $this->dataPost['dateEnd']);
+
+            $data[0]['dateStart'] = $eventDateStart->format('Y-m-d H:i:s');
+            $data[0]['dateEnd'] = $eventDateEnd->format('Y-m-d H:i:s');
+            $data[0]['roomId'] = $_SESSION['room']['id'];
+            $data[0]['id'] = $this->dataPost['id'];
+            $data[0]['description'] = $this->dataPost['description'];
+            $dataCheck = $data;
+            foreach ($dataCheck as $key => $value)
+            {
+                unset($dataCheck[$key]['description']);
+            }
+
+            $canUpdateEvent = TRUE;
+            //Проверяю свободное время
+            foreach ($dataCheck as $value)
+            {
+                $tmp = $this->model->checkEvent($value);
+
+                if (!empty($tmp))
+                {
+                    $eventInBD[] = $tmp;
+                    $canUpdateEvent = FALSE;
+                }
+            }
+            if ($canUpdateEvent)
+            {
+                foreach ($data as $value)
+                {
+                    $this->model->updateEvent($value, $this->dataPost['deleteAllEvent']);
+                }
+
+                $tmpStart = new DateTime($data[0]['dateStart']);
+                $tmpEnd = new DateTime($data[0]['dateEnd']);
+
+                $respone = array();
+                $respone['success'] = TRUE;
+                $respone['time'] = $this->getStringTime($tmpStart) . "-" . $this->getStringTime($tmpEnd);
+                $respone['message'] = 'Event has been updated';
+                echo json_encode($respone);
+                exit;
+            } else
+            {
+                $respone = array();
+                $respone['success'] = FALSE;
+                //$respone['time'] = $this->getStringTime($tmpStart) . "-" . $this->getStringTime($tmpEnd);
+                foreach ($eventInBD as $tmpArr)
+                {   foreach ($tmpArr as $value)
+                    {
+                        $respone['message'] = "Room is booked from " . $value['date_start'] . " to " . $value['date_end'];
+                    }
+                }
+                echo json_encode($respone);
+            }
         }
+    }
+
+    public function getStringTime($date)
+    {
+        if ($_SESSION['userData'][0]['timeFormat24'])
+        {
+            $date = $date->format('H:i');
+        } else
+        {
+            $date = $date->format('g:i a');
+        }
+        return $date;
     }
 
     /**
@@ -177,7 +277,6 @@ class EventController extends Controller
         $params['room_id'] = $_SESSION['room']['id'];
 
         $res = $this->model->eventList($params);
-        // var_dump($res);
         $dataArray = array();
         foreach ($res as $value)
         {
@@ -276,7 +375,7 @@ class EventController extends Controller
     {
         $currentDay = new DateTime();
         $message = "";
-        if ($currentDay < $dateStart || $currentDay > $dateEnd)
+        if ($currentDay > $dateStart || $currentDay > $dateEnd)
         {
             $message = "Current day mast be lower date start and date end event.";
         }
@@ -323,7 +422,6 @@ class EventController extends Controller
             $hourEnd = $this->dataPost['hourEnd'];
             $minutEnd = $this->dataPost['minutEnd'];
             $timePrefEnd = $this->dataPost['timePrefEnd'];
-            // var_dump($this->dataPost);
             if ($timePrefStart == 'AM')
             {
                 $eventDateStart = new DateTime(date("Y-m-d H:i:s", mktime($hourStat, $minutStat, 0, $monthEvent, $dayEvent, $yearEvent)));
@@ -350,11 +448,14 @@ class EventController extends Controller
                 unset($dataCheck[$key]['description']);
             }
 
+            // $eventInBD;
             foreach ($dataCheck as $value)
             {
-                $eventInBD = $this->model->checkEvent($value);
-                if (!empty($eventInBD))
+                $tmp = $this->model->checkEvent($value);
+
+                if (!empty($tmp))
                 {
+                    $eventInBD[] = $tmp;
                     $canCreateEvent = FALSE;
                 }
             }
@@ -381,15 +482,20 @@ class EventController extends Controller
                 exit;
             } else
             {
-                foreach ($eventInBD as $value)
+
+                foreach ($eventInBD as $tempArr)
                 {
-                    $error = "Room is booked from " . $value['date_start'] . " to " . $value['date_end'];
-                    User::setFlash($error, 'errors');
-                    $this->view->setMainTemplate('blank');
-                    $user = new User;
-                    $res = $user->userList(NULL);
-                    $this->view->setVar('users', $res);
+                    foreach ($tempArr as $value)
+                    {
+                        $error = "Room is booked from " . $value['date_start'] . " to " . $value['date_end'];
+                        User::setFlash($error, 'errors');
+                        $this->view->setMainTemplate('blank');
+                        $user = new User;
+                        $res = $user->userList(NULL);
+                        $this->view->setVar('users', $res);
+                    }
                 }
+
                 $this->view->addTemplate('newevent')->render();
             }
         } else
@@ -443,6 +549,7 @@ class EventController extends Controller
                 $data[$i]['dateEnd'] = $dateEnd->format('Y-m-d H:i:s');
             }
         }
+
         return $data;
     }
 

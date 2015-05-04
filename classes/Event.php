@@ -19,7 +19,12 @@ class Event extends sql
      */
     public function eventList($params)
     {
-        if (isset($params['id']))
+        if (isset($params['recurrent_id']))
+        {
+            $query = 'SELECT ev.*, u.surname as surname, u.name as name FROM event ev '
+                    . 'LEFT JOIN user u ON ev.user_id = u.id'
+                    . ' WHERE ev.recurrent_id=:recurrent_id';
+        } elseif (isset($params['id']))
         {
             $query = 'SELECT ev.*, u.surname as surname, u.name as name FROM event ev '
                     . 'LEFT JOIN user u ON ev.user_id = u.id'
@@ -42,7 +47,16 @@ class Event extends sql
      */
     public function checkEvent($params)
     {
-        if (isset($params['id']))
+                
+        if (isset($params['recurrent_id']))
+        {
+
+            $query = 'SELECT `id`,`date_start`,`date_end`  FROM  `event`' .
+                    'WHERE  `room_id` = :roomId AND `recurrent_id`!=:recurrent_id AND ((`date_start` BETWEEN  :dateStart AND  :dateEnd)' .
+                    'OR  (`date_end` BETWEEN  :dateStart AND  :dateEnd)' .
+                    'OR (`date_start`< :dateStart AND `date_end`>:dateStart)' .
+                    'OR  (`date_start`< :dateEnd AND `date_end`>:dateEnd))';
+        } elseif (isset($params['id']))
         {
 
             $query = 'SELECT `id`,`date_start`,`date_end`  FROM  `event`' .
@@ -52,15 +66,14 @@ class Event extends sql
                     'OR  (`date_start`< :dateEnd AND `date_end`>:dateEnd))';
         } else
         {
-           
+
             $query = 'SELECT `id`,`date_start`,`date_end`  FROM  `event`' .
                     'WHERE  `room_id` = :roomId AND((`date_start` BETWEEN  :dateStart AND  :dateEnd)' .
                     'OR  (`date_end` BETWEEN  :dateStart AND  :dateEnd)' .
                     'OR (`date_start`< :dateStart AND `date_end`>:dateStart)' .
                     'OR  (`date_start`< :dateEnd AND `date_end`>:dateEnd))';
-         }
+        }
         $res = $this->getAll($query, $params);
-      //  var_dump($query,$params);exit;
         return $res;
     }
 
@@ -70,12 +83,11 @@ class Event extends sql
      * описание события и id комнаты.
      * @return int последнего добавленного события.
      */
-    public function updateEvent($params)
+    public function updateEvent($params, $deleteAllEvent)
     {
-        //var_dump($data);exit;
-        $query = 'UPDATE  `event` SET `room_id`=:roomId, `date_start`=:dateStart, `date_end`=:dateEnd,'
-                . '`description`=:description WHERE `id`=:id';
-
+            $query = 'UPDATE  `event` SET `room_id`=:roomId, `date_start`=:dateStart, `date_end`=:dateEnd,'
+                    . '`description`=:description WHERE `id`=:id';
+   
         $res = $this->executeQuery($query, $params);
         return $res;
     }
